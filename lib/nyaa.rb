@@ -77,7 +77,7 @@ class Nyaa
         # TODO: The status hashkey is broken
         :status =>
         if row.at('tr.trusted')
-         'trusted'
+          'trusted'
         elsif row.at('tr.remake')
           'remake'
         elsif row.at('tr.aplus')
@@ -161,7 +161,7 @@ class Nyaa
       else
         part = partition(data, @marker + @opts[:size], @opts[:size])
       end
-        display(data, part)
+      display(data, part)
     when choice[0] == 'p'
       if @marker < 1
         f.indent { f.display_line("[purple]! Already at page one.[/]") }

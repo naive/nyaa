@@ -1,15 +1,18 @@
+require File.expand_path("../lib/nyaa/version", __FILE__)
+
 Gem::Specification.new do |s|
   s.name        = 'nyaa'
-  s.version     = '0.1.0'
+  s.version     = Nyaa::VERSION
   s.homepage    = 'https://github.com/mistofvongola/nyaa'
-  s.summary     = 'A simple tool to browse NyaaTorrents.'
-  s.description = 'The nyaa gem is a CLI to NyaaTorrents.'
+  s.summary     = 'The nyaa gem is a CLI to NyaaTorrents.'
+  s.description = 'Browse and download from NyaaTorrents from the command-line. Supports categories and filters.'
 
   s.authors  = ['David Palma']
   s.email    = 'requiem.der.seele@gmail.com'
 
-  s.executables = ['nyaa']
-  s.files       = `git ls-files`.split("\n")
+  s.executables  = ['nyaa']
+  s.files        = `git ls-files`.split("\n")
+  s.require_path = 'lib'
 
   s.add_runtime_dependency 'trollop', '>= 1.16.2'
   s.add_runtime_dependency 'formatador', '>= 0.2.3'
