@@ -5,9 +5,9 @@ require 'nyaa'
 opts = Trollop::options do
   version "nyaa v0.1.0 (c) 2012 David Palma http://github.com/mistofvongola"
   banner <<-EOM
-The nyaa gem is a simple tool to query Nyaa.eu via a CLI.
+The nyaa gem is a simple CLI browser for NyaaTorrents.
 Usage:
-    nyaa [options] "my search query string here"
+    nyaa [options] "my search"
 
 Categories:
   anime_all, anime_raw, anime_english, anime_nonenglish, anime_music_video
