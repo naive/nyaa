@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+
+require 'nyaa'
+
+opts = Trollop::options do
+  version "nyaa v0.1.0 (c) 2012 David Palma http://github.com/mistofvongola"
+  banner <<-EOM
+The nyaa gem is a simple tool to query Nyaa.eu via a CLI.
+Usage:
+    nyaa [options] "my search query string here"
+
+Categories:
+  anime_all, anime_raw, anime_english, anime_nonenglish, anime_music_video
+  books_all, books_raw, books_english, books_nonenglish
+  audio_all, audio_lossless, audio_lossy
+  pictures_all, pictures_photos, pictures_graphics,
+  live_all, live_raw, live_english, live_nonenglish, live_promo
+  software_all, software_apps, software_games
+
+Filters:
+  show_all, filter_remakes, trusted_only, aplus_only
+
+Options:
+  EOM
+  opt :category, "Select a category to search in. See below for valid options.", :default => 'anime_english'
+  opt :filter, "Select a filter for your search. See below for valid options.", :default => 'show_all'
+  opt :outdir, "Select the download directory.", :default => File.expand_path('~/Downloads')
+  opt :size, "Show <i> results at a time. Must be between 1 and 100.", :type => :int, :default => 4
+  opt :page, "Start by showing the <i>th result page.", :type => :int, :default => 1
+  opt :version, "Print the version and exit."
+  opt :help, "Show this information and exit."
+end
+
+unless Nyaa::CATS.has_key?(opts[:category])
+  Trollop::die :category, "is not a valid category"
+end
+unless Nyaa::FILS.has_key?(opts[:filter])
+  Trollop::die :filter, "is not a valid filter"
+end
+query = ARGV.join(' ')
+
+begin
+  n = Nyaa.new query, opts
+  n.search
+rescue Interrupt
+  puts "\nInterrupt received. Exiting application."
+  exit
+end
