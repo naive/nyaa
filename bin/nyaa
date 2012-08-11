@@ -43,6 +43,6 @@ begin
   n = Nyaa.new query, opts
   n.search
 rescue Interrupt
-  puts "\nInterrupt received. Exiting application."
+  puts "\nInterrupt received. Exiting."
   exit
 end
