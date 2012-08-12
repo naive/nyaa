@@ -4,6 +4,7 @@ require 'nokogiri'
 require 'rest_client'
 require 'trollop'
 require 'formatador'
+require 'uri'
 
 class Nyaa
   BASE_URL = 'http://www.nyaa.eu/?page=torrents'
@@ -41,7 +42,7 @@ class Nyaa
   }
 
   def initialize(query, opts)
-    @query       = query
+    @query       = URI.escape(query)
     @opts        = opts
     @opts[:size] = PSIZE if opts[:size] > PSIZE
     @opts[:size] = 1 if opts[:size] <= 1
