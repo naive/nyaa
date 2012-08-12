@@ -105,7 +105,7 @@ class Nyaa
     f = Formatador.new
     f.display_line( "\t[yellow]NyaaTorrents >> Browse | Anime, manga, and music[/]\n" )
 
-    if data[0].nil?
+    if data[0].nil? || results[0].nil?
       f.display_line( "[normal]No matches found. Try another category. See --help.[/]\n")
       f.display_line("\t[yellow]Exiting.[/]")
       exit
@@ -126,7 +126,7 @@ class Nyaa
       f.display_line( "[#{flag}]#{data.index(item)+1}. #{item[:name]}[/]")
 
       f.indent {
-        f.display_line( "[bold]SE: [green]#{item[:se]}[/] [bold]LE: [red]#{item[:le]}[/] [bold]DLs: [yellow]#{item[:dls]}[/] [bold]Msg: [blue]#{item[:msg]}[/]" )
+        f.display_line( "[bold]Size: [purple]#{item[:size]}[/] [bold]SE: [green]#{item[:se]}[/] [bold]LE: [red]#{item[:le]}[/] [bold]DLs: [yellow]#{item[:dls]}[/] [bold]Msg: [blue]#{item[:msg]}[/]" )
         f.display_line( "[green]#{item[:dl]}[/]" )
       }
     end
@@ -163,7 +163,6 @@ class Nyaa
         @opts[:page] += 1
         f.indent { f.display_line("[purple][blink_fast]! Loading more results...[/]") }
         data = harvest(@query, @opts[:page])
-        @marker = 0
         part = partition(data, 0, @opts[:size])
       else
         part = partition(data, @marker + @opts[:size], @opts[:size])
