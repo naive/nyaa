@@ -104,6 +104,12 @@ class Nyaa
   def display(data, results)
     f = Formatador.new
     f.display_line( "\t[yellow]NyaaTorrents >> Browse | Anime, manga, and music[/]\n" )
+
+    if data[0].nil?
+      f.display_line( "[normal]No matches found. Try another category. See --help.[/]\n")
+      f.display_line("\t[yellow]Exiting.[/]")
+      exit
+    end
     f.display_line( "[bold]#{data[0][:cat]}\n[/]" )
 
     results.each do |item|
