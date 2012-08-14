@@ -185,7 +185,15 @@ class Nyaa
   end
 
   def download(url, output_path)
-    get_cmd = "curl -J -O '#{url}'"
-    `cd #{output_path} && #{get_cmd}`
+    resp = RestClient.get(url)
+
+    # TODO: Clean this mess up
+    # Get filename from Content-Disposition header
+    disp_fname = resp.headers[:content_disposition].split(/;\s+/).select{ |v| v =~ /filename\s*=/ }[0]
+    local_fname = /([""'])(?:(?=(\\?))\2.)*?\1/.match(disp_fname).to_s.gsub(/\A['"]+|['"]+\Z/, "")
+
+    File.open("#{output_path}/#{local_fname}", 'w') do
+      |f| f.write(resp.body)
+    end
   end
 end
