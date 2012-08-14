@@ -1,4 +1,4 @@
-# nyaa
+# Nyaa
 
 Nyaa is a CLI to NyaaTorrents. You can browse, search, and download. Nifty.
 
@@ -31,4 +31,4 @@ For a list of categories and filters, see `nyaa -h`.
 
 ## License
 
-See LICENSE
+MIT License. See LICENSE for details.
