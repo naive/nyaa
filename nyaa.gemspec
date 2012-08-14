@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
   s.test_files   = s.files.grep(%r{^(test|spec|features)/})
   s.require_path = ['lib']
 
+  s.add_development_dependency 'rake', '~> 0.9.2.2'
   s.add_runtime_dependency 'trollop', '~> 1.16.2'
   s.add_runtime_dependency 'formatador', '~> 0.2.3'
   s.add_runtime_dependency 'nokogiri', '~> 1.5.5'
