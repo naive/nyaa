@@ -31,16 +31,16 @@ Options:
   opt :help, "Show this information and exit."
 end
 
-unless Nyaa::CATS.has_key?(opts[:category])
+unless Nyaa::Browser::CATS.has_key?(opts[:category])
   Trollop::die :category, "is not a valid category"
 end
-unless Nyaa::FILS.has_key?(opts[:filter])
+unless Nyaa::Browser::FILS.has_key?(opts[:filter])
   Trollop::die :filter, "is not a valid filter"
 end
 query = ARGV.join(' ')
 
 begin
-  n = Nyaa.new query, opts
+  n = Nyaa::Browser.new query, opts
   n.search
 rescue Interrupt
   puts "\nInterrupt received. Exiting."
