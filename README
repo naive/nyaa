@@ -23,6 +23,7 @@ For a list of categories and filters, see `nyaa -h`.
 ![](https://github.com/mistofvongola/nyaa/raw/master/screenshots/screenshot_3.png)
 
 ## Contributing
+0. See HACKING file for style guidelines
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Added some feature'`)
@@ -31,4 +32,8 @@ For a list of categories and filters, see `nyaa -h`.
 
 ## License
 
-MIT License. See LICENSE for details.
+See LICENSE file.
+
+## Authors
+
+See AUTHORS file.
