@@ -12,7 +12,7 @@ To start browsing immediately, simply run `nyaa`. The default category is englis
 
 ![](https://github.com/mistofvongola/nyaa/raw/master/screenshots/screenshot_1.png)
 
-Nyaa supports all the aspects of search of the main site. You can search by category and/or filters.
+Nyaa supports all the aspects of search of the main site. You can search by category and/or filters. Nyaa also shows a summary of seeders, leechers, total filesize, and number of downloads. To download an item, simply enter the number of the result.
 
     nyaa -c anime_english -f trusted_only 'guilty crown'
 
