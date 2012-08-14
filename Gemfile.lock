@@ -1,0 +1,24 @@
+PATH
+  remote: .
+  specs:
+    nyaa (0.1.2)
+      formatador (~> 0.2.3)
+      nokogiri (~> 1.5.5)
+      rest-client (~> 1.6.7)
+      trollop (~> 1.16.2)
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    formatador (0.2.3)
+    mime-types (1.19)
+    nokogiri (1.5.5)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
+    trollop (1.16.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  nyaa!
