@@ -4,6 +4,9 @@ require 'rake/testtask'
 
 task :default => :test
 
+require 'rspec/core/rake_task'
+RSpec::Core::RakeTask.new(:spec)
+
 Rake::TestTask.new do |t|
   t.libs << 'lib/nyaa'
   t.test_files = FileList['test/lib/nyaa/*_test.rb']
