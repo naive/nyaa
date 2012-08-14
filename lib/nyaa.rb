@@ -105,10 +105,12 @@ module Nyaa
 
     def display(data, results)
       f = Formatador.new
-      f.display_line( "\t[yellow]NyaaTorrents >> Browse | Anime, manga, and music[/]\n" )
+      f.display_line( "\t[yellow]NyaaTorrents >> "\
+                     "Browse | Anime, manga, and music[/]\n" )
 
       if data[0].nil? || results[0].nil?
-        f.display_line( "[normal]No matches found. Try another category. See --help.[/]\n")
+        f.display_line( "[normal]No matches found. "\
+                       "Try another category. See --help.[/]\n")
         f.display_line("\t[yellow]Exiting.[/]")
         exit
       end
@@ -128,7 +130,11 @@ module Nyaa
         f.display_line( "[#{flag}]#{data.index(item)+1}. #{item[:name]}[/]")
 
         f.indent {
-          f.display_line( "[bold]Size: [purple]#{item[:size]}[/] [bold]SE: [green]#{item[:se]}[/] [bold]LE: [red]#{item[:le]}[/] [bold]DLs: [yellow]#{item[:dls]}[/] [bold]Msg: [blue]#{item[:msg]}[/]" )
+          f.display_line( "[bold]Size: [purple]#{item[:size]}[/] "\
+                         "[bold]SE: [green]#{item[:se]}[/] "\
+                         "[bold]LE: [red]#{item[:le]}[/] "\
+                         "[bold]DLs: [yellow]#{item[:dls]}[/] "\
+                         "[bold]Msg: [blue]#{item[:msg]}[/]" )
           f.display_line( "[green]#{item[:dl]}[/]" )
         }
       end
@@ -138,14 +144,18 @@ module Nyaa
       end_count = @marker + @opts[:size]
       end_count = PSIZE if end_count > PSIZE
 
-      f.display_line("\n\t[yellow]Displaying results #{start_count} through #{end_count} of #{PSIZE} (Page #{@opts[:page]})\n")
+      f.display_line("\n\t[yellow]Displaying results "\
+                     "#{start_count} through #{end_count} of #{PSIZE} "\
+                     "#(Page #{@opts[:page]})\n")
 
       prompt(data, results)
     end
 
     def prompt(data, results)
       f = Formatador.new
-      f.display_line("[yellow]Help: q to quit, n/p for pagination, or a number to download that choice.")
+      f.display_line("[yellow]Help: q to quit, "\
+                     "n/p for pagination, "\
+                     "or a number to download that choice.")
       # prompt
       f.display("[bold]>[/] ")
 
@@ -163,7 +173,8 @@ module Nyaa
       when choice[0] == 'n'
         if @marker + @opts[:size] == 100
           @opts[:page] += 1
-          f.indent { f.display_line("[purple][blink_fast]! Loading more results...[/]") }
+          f.indent { f.display_line("[purple][blink_fast]! "\
+                                    "Loading more results...[/]") }
           data = harvest(@query, @opts[:page])
           part = partition(data, 0, @opts[:size])
         else
@@ -189,10 +200,13 @@ module Nyaa
     def download(url, output_path)
       resp = RestClient.get(url)
 
-      # TODO: Clean this mess up
       # Get filename from Content-Disposition header
-      disp_fname = resp.headers[:content_disposition].split(/;\s+/).select{ |v| v =~ /filename\s*=/ }[0]
-      local_fname = /([""'])(?:(?=(\\?))\2.)*?\1/.match(disp_fname).to_s.gsub(/\A['"]+|['"]+\Z/, "")
+      disp_fname = resp.headers[:content_disposition].
+        split(/;\s+/).
+        select { |v| v =~ /filename\s*=/ }[0]
+      local_fname = /([""'])(?:(?=(\\?))\2.)*?\1/.
+        match(disp_fname).
+        to_s.gsub(/\A['"]+|['"]+\Z/, "")
 
       File.open("#{output_path}/#{local_fname}", 'w') do
         |f| f.write(resp.body)
