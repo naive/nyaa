@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'nyaa'
+require 'trollop'
 
 opts = Trollop::options do
   version "nyaa v0.1.0 (c) 2012 David Palma http://github.com/mistofvongola"
