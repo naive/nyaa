@@ -36,5 +36,5 @@ end
 
 desc "Publish current version of gem"
 task :publish do
-  system "gem publish pkg/#{gemspec.name}-#{gemspec.version}.gem"
+  system "gem push pkg/#{gemspec.name}-#{gemspec.version}.gem"
 end
