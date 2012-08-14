@@ -1,4 +1,4 @@
-# Nyaa [![Build Status](https://secure.travis-ci.org/mistofvongola/nyaa.png?branch=master)](http://travis-ci.org/mistofvongola/nyaa) [![Dependency Status](https://gemnasium.com/mistofvongola/nyaa.png)](http://gemnasium.com/mistofvongola/nyaa) [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/mistofvongola/nyaa)
+# Nyaa [![Build Status](https://secure.travis-ci.org/mistofvongola/nyaa.png)](http://travis-ci.org/mistofvongola/nyaa) [![Dependency Status](https://gemnasium.com/mistofvongola/nyaa.png)](http://gemnasium.com/mistofvongola/nyaa) [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/mistofvongola/nyaa)
 
 Nyaa is a CLI to NyaaTorrents. You can browse, search, and download. Nifty.
 
