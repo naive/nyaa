@@ -4,7 +4,7 @@ require 'nyaa'
 require 'trollop'
 
 opts = Trollop::options do
-  version "nyaa v0.1.0 (c) 2012 David Palma http://github.com/mistofvongola"
+  version "nyaa v#{Nyaa::VERSION} (c) 2012 David Palma http://github.com/mistofvongola"
   banner <<-EOM
 The nyaa gem is a simple CLI browser for NyaaTorrents.
 Usage:
