@@ -33,3 +33,8 @@ desc "Clean automatically generated files"
 task :clean do
   FileUtils.rm_rf "pkg"
 end
+
+desc "Publish current version of gem"
+task :publish do
+  system "gem publish pkg/#{gemspec.name}-#{gemspec.version}.gem"
+end
