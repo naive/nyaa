@@ -169,7 +169,7 @@ module Nyaa
       when choice[0] == 'n'
         if @marker + @opts[:size] == 100
           @opts[:page] += 1
-          f.indent { f.display_line("[purple][blink_fast]! "\
+          f.indent { f.display_line("=>[purple][blink_fast] "\
                                     "Loading more results...[/]") }
           data = harvest(@query, @opts[:page])
           part = partition(data, 0, @opts[:size])
@@ -179,8 +179,8 @@ module Nyaa
         display(data, part)
       when choice[0] == 'p'
         if @marker < 1
-          f.indent { f.display_line("[purple]! Already at page one.[/]") }
-          input(data, results)
+          f.indent { f.display_line("=>[red] Already at page one.[/]") }
+          prompt(data, results)
         else
           part = partition(data, @marker - @opts[:size], @opts[:size])
           display(data, part)
@@ -188,7 +188,10 @@ module Nyaa
       when choice[0].match(/\d/)
         /(\d+)(\s*\|(.*))*/.match(choice) do |str|
           num = str[1].to_i - 1
-          download(data[num][:dl], @opts[:outdir])
+          file = download(data[num][:dl], @opts[:outdir])
+          f.indent {
+            f.display_line("=> Downloaded [green]'#{file}'[/]") }
+          prompt(data, results)
         end
       end
     end
@@ -207,6 +210,7 @@ module Nyaa
       File.open("#{output_path}/#{local_fname}", 'w') do
         |f| f.write(resp.body)
       end
+      local_fname
     end
   end
 end
