@@ -17,8 +17,10 @@ Gem::Specification.new do |s|
   s.require_path = ['lib']
 
   s.add_development_dependency 'rake'
-  s.add_development_dependency 'rspec'
-  s.add_development_dependency 'simplecov'
+  s.add_development_dependency 'minitest'
+  s.add_development_dependency 'turn', '< 0.8.3'
+  s.add_development_dependency 'webmock'
+  s.add_development_dependency 'vcr'
   s.add_runtime_dependency 'trollop', '~> 1.16.2'
   s.add_runtime_dependency 'formatador', '~> 0.2.3'
   s.add_runtime_dependency 'nokogiri', '~> 1.5.5'

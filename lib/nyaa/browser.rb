@@ -64,6 +64,19 @@ module Nyaa
       rows = doc.css('div#main div.content table.tlist tr.tlistrow')
       #puts "DEBUG: Row: #{rows[0].to_s}"
       rows.each do |row|
+
+        if row.values[0] == 'trusted tlistrow'
+           status = 'Trusted'
+        elsif row.values[0] == 'remake tlistrow'
+           status = 'Remake'
+        elsif row.values[0] == 'aplus tlistrow'
+           status = 'A+'
+        elsif row.values[0] == 'tlistrow'
+           status = 'Normal'
+        else
+           status = 'Normal'
+        end
+
         items << {
           :cat    => row.css('td.tlisticon').at('a')['title'],
           :name   => row.css('td.tlistname').at('a').text.strip,
@@ -73,17 +86,7 @@ module Nyaa
           :le     => row.css('td.tlistln').text,
           :dls    => row.css('td.tlistdn').text,
           :msg    => row.css('td.tlistmn').text,
-          # TODO: The status hashkey is broken
-          :status =>
-          if row.at('tr.trusted')
-            'trusted'
-          elsif row.at('tr.remake')
-            'remake'
-          elsif row.at('tr.aplus')
-            'aplus'
-          else
-            'normal'
-          end
+          :status => status
         }
       end
       items
@@ -91,7 +94,6 @@ module Nyaa
 
     def partition(ary, start, size)
       start = 0 if start < 0
-      # update marker
       @marker = start
       size = PSIZE if size > PSIZE
 
@@ -100,38 +102,38 @@ module Nyaa
     end
 
     def display(data, results)
-      f = Formatador.new
-      f.display_line( "\t[yellow]NyaaTorrents >> "\
+      format = Formatador.new
+      format.display_line( "\t[yellow]NyaaTorrents >> "\
                      "Browse | Anime, manga, and music[/]\n" )
 
       if data[0].nil? || results[0].nil?
-        f.display_line( "[normal]No matches found. "\
+        format.display_line( "[normal]No matches found. "\
                        "Try another category. See --help.[/]\n")
-        f.display_line("\t[yellow]Exiting.[/]")
+        format.display_line("\t[yellow]Exiting.[/]")
         exit
       end
-      f.display_line( "[bold]#{data[0][:cat]}\n[/]" )
+      format.display_line( "[bold]#{data[0][:cat]}\n[/]" )
 
       results.each do |item|
         case item[:status]
-        when 'aplus'
+        when 'A+'
           flag = 'blue'
-        when 'trusted'
+        when 'Trusted'
           flag = 'green'
-        when 'remake'
+        when 'Remake'
           flag = 'red'
         else
           flag = 'normal'
         end
-        f.display_line( "[#{flag}]#{data.index(item)+1}. #{item[:name]}[/]")
-
-        f.indent {
-          f.display_line( "[bold]Size: [purple]#{item[:size]}[/] "\
+        format.display_line("#{data.index(item)+1}. "\
+                            "[#{flag}]#{item[:name]}[/]")
+        format.indent {
+          format.display_line("[bold]Size: [purple]#{item[:size]}[/] "\
                          "[bold]SE: [green]#{item[:se]}[/] "\
                          "[bold]LE: [red]#{item[:le]}[/] "\
                          "[bold]DLs: [yellow]#{item[:dls]}[/] "\
-                         "[bold]Msg: [blue]#{item[:msg]}[/]" )
-          f.display_line( "[green]#{item[:dl]}[/]" )
+                         "[bold]Msg: [blue]#{item[:msg]}[/]")
+          format.display_line("[cyan]#{item[:dl]}[/]")
         }
       end
 
@@ -140,7 +142,7 @@ module Nyaa
       end_count = @marker + @opts[:size]
       end_count = PSIZE if end_count > PSIZE
 
-      f.display_line("\n\t[yellow]Displaying results "\
+      format.display_line("\n\t[yellow]Displaying results "\
                      "#{start_count} through #{end_count} of #{PSIZE} "\
                      "#(Page #{@opts[:page]})\n")
 
@@ -148,12 +150,12 @@ module Nyaa
     end
 
     def prompt(data, results)
-      f = Formatador.new
-      f.display_line("[yellow]Help: q to quit, "\
+      format = Formatador.new
+      format.display_line("[yellow]Help: q to quit, "\
                      "n/p for pagination, "\
                      "or a number to download that choice.")
       # prompt
-      f.display("[bold]>[/] ")
+      format.display("[bold]>[/] ")
 
       # handle input
       choice = STDIN.gets
@@ -169,7 +171,7 @@ module Nyaa
       when choice[0] == 'n'
         if @marker + @opts[:size] == 100
           @opts[:page] += 1
-          f.indent { f.display_line("=>[purple][blink_fast] "\
+          format.indent { f.display_line("=>[yellow][blink_fast] "\
                                     "Loading more results...[/]") }
           data = harvest(@query, @opts[:page])
           part = partition(data, 0, @opts[:size])
@@ -179,7 +181,7 @@ module Nyaa
         display(data, part)
       when choice[0] == 'p'
         if @marker < 1
-          f.indent { f.display_line("=>[red] Already at page one.[/]") }
+          format.indent { f.display_line("=>[red] Already at page one.[/]") }
           prompt(data, results)
         else
           part = partition(data, @marker - @opts[:size], @opts[:size])
@@ -189,10 +191,13 @@ module Nyaa
         /(\d+)(\s*\|(.*))*/.match(choice) do |str|
           num = str[1].to_i - 1
           file = download(data[num][:dl], @opts[:outdir])
-          f.indent {
-            f.display_line("=> Downloaded [green]'#{file}'[/]") }
+          format.indent {
+            format.display_line("=> Downloaded [green]'#{file}'[/]") }
           prompt(data, results)
         end
+      else
+        format.indent { f.display_line("=>[red] Unrecognized option.[/]") }
+        prompt(data, results)
       end
     end
 
