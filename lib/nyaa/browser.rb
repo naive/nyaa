@@ -2,6 +2,7 @@ require 'nokogiri'
 require 'rest_client'
 require 'formatador'
 require 'uri'
+require 'nyaa/torrent'
 
 module Nyaa
   class Browser
@@ -60,36 +61,10 @@ module Nyaa
       url << "&offset=#{page}" if @opts[:page]
       url << "&term=#{query}" unless @query.empty?
       doc = Nokogiri::HTML(RestClient.get(url))
-      items = []
+      torrents = []
       rows = doc.css('div#main div.content table.tlist tr.tlistrow')
-      #puts "DEBUG: Row: #{rows[0].to_s}"
-      rows.each do |row|
-
-        if row.values[0] == 'trusted tlistrow'
-           status = 'Trusted'
-        elsif row.values[0] == 'remake tlistrow'
-           status = 'Remake'
-        elsif row.values[0] == 'aplus tlistrow'
-           status = 'A+'
-        elsif row.values[0] == 'tlistrow'
-           status = 'Normal'
-        else
-           status = 'Normal'
-        end
-
-        items << {
-          :cat    => row.css('td.tlisticon').at('a')['title'],
-          :name   => row.css('td.tlistname').at('a').text.strip,
-          :dl     => row.css('td.tlistdownload').at('a')['href'],
-          :size   => row.css('td.tlistsize').text,
-          :se     => row.css('td.tlistsn').text,
-          :le     => row.css('td.tlistln').text,
-          :dls    => row.css('td.tlistdn').text,
-          :msg    => row.css('td.tlistmn').text,
-          :status => status
-        }
-      end
-      items
+      rows.each { |row| torrents << Torrent.new(row) }
+      torrents
     end
 
     def partition(ary, start, size)
@@ -112,10 +87,10 @@ module Nyaa
         format.display_line("\t[yellow]Exiting.[/]")
         exit
       end
-      format.display_line( "[bold]#{data[0][:cat]}\n[/]" )
+      format.display_line( "[bold]#{data[0].category}\n[/]" )
 
-      results.each do |item|
-        case item[:status]
+      results.each do |torrent|
+        case torrent.status
         when 'A+'
           flag = 'blue'
         when 'Trusted'
@@ -125,15 +100,16 @@ module Nyaa
         else
           flag = 'normal'
         end
-        format.display_line("#{data.index(item)+1}. "\
-                            "[#{flag}]#{item[:name]}[/]")
+        format.display_line("#{data.index(torrent)+1}. "\
+                            "[#{flag}]#{torrent.name}[/]")
         format.indent {
-          format.display_line("[bold]Size: [purple]#{item[:size]}[/] "\
-                         "[bold]SE: [green]#{item[:se]}[/] "\
-                         "[bold]LE: [red]#{item[:le]}[/] "\
-                         "[bold]DLs: [yellow]#{item[:dls]}[/] "\
-                         "[bold]Msg: [blue]#{item[:msg]}[/]")
-          format.display_line("[cyan]#{item[:dl]}[/]")
+          format.display_line(
+                         "[bold]Size: [purple]#{torrent.filesize}[/] "\
+                         "[bold]SE: [green]#{torrent.seeders}[/] "\
+                         "[bold]LE: [red]#{torrent.leechers}[/] "\
+                         "[bold]DLs: [yellow]#{torrent.downloads}[/] "\
+                         "[bold]Msg: [blue]#{torrent.comments}[/]")
+          format.display_line("[normal]#{torrent.link}[/]")
         }
       end
 
@@ -144,7 +120,7 @@ module Nyaa
 
       format.display_line("\n\t[yellow]Displaying results "\
                      "#{start_count} through #{end_count} of #{PSIZE} "\
-                     "#(Page #{@opts[:page]})\n")
+                     "(Page ##{@opts[:page]})\n")
 
       prompt(data, results)
     end
@@ -152,6 +128,7 @@ module Nyaa
     def prompt(data, results)
       format = Formatador.new
       format.display_line("[yellow]Help: q to quit, "\
+                     "h for display help, "\
                      "n/p for pagination, "\
                      "or a number to download that choice.")
       # prompt
@@ -168,10 +145,18 @@ module Nyaa
       case
       when choice[0] == 'q'
         exit
+      when choice[0] == 'h'
+          format.indent {
+            format.display_line(
+              "=>[yellow] The color of an entry represents its status:[/]")
+            format.display_line(
+              "[blue]A+[/], [green]Trusted[/], Normal, or [red]Remake[/]")
+          }
+          prompt(data, results)
       when choice[0] == 'n'
         if @marker + @opts[:size] == 100
           @opts[:page] += 1
-          format.indent { f.display_line("=>[yellow][blink_fast] "\
+          format.indent { format.display_line("=>[yellow][blink_fast] "\
                                     "Loading more results...[/]") }
           data = harvest(@query, @opts[:page])
           part = partition(data, 0, @opts[:size])
@@ -181,7 +166,7 @@ module Nyaa
         display(data, part)
       when choice[0] == 'p'
         if @marker < 1
-          format.indent { f.display_line("=>[red] Already at page one.[/]") }
+          format.indent { format.display_line("=>[red] Already at page one.[/]") }
           prompt(data, results)
         else
           part = partition(data, @marker - @opts[:size], @opts[:size])
@@ -190,32 +175,55 @@ module Nyaa
       when choice[0].match(/\d/)
         /(\d+)(\s*\|(.*))*/.match(choice) do |str|
           num = str[1].to_i - 1
-          file = download(data[num][:dl], @opts[:outdir])
-          format.indent {
-            format.display_line("=> Downloaded [green]'#{file}'[/]") }
+          file = download(data[num].link, @opts[:outdir])
+          if file
+            format.indent {
+              format.display_line(
+                "=>[green] Downloaded '#{file}' successfully.[/]")
+            }
+          else
+            format.indent {
+              format.display_line(
+                "=>[red] Download failed (3 attempts).[/]")
+            }
+          end
           prompt(data, results)
         end
       else
-        format.indent { f.display_line("=>[red] Unrecognized option.[/]") }
+        format.indent { format.display_line("=>[red] Unrecognized option.[/]") }
         prompt(data, results)
       end
     end
 
     def download(url, output_path)
-      resp = RestClient.get(url)
+      retries = 3
 
-      # Get filename from Content-Disposition header
-      disp_fname = resp.headers[:content_disposition].
-        split(/;\s+/).
-        select { |v| v =~ /filename\s*=/ }[0]
-      local_fname = /([""'])(?:(?=(\\?))\2.)*?\1/.
-        match(disp_fname).
-        to_s.gsub(/\A['"]+|['"]+\Z/, "")
-
-      File.open("#{output_path}/#{local_fname}", 'w') do
-        |f| f.write(resp.body)
+      begin
+        resp = RestClient.get(url)
+      rescue StandardError => e
+        if retries > 0
+          retries -= 1
+          sleep 1
+          retry
+        end
       end
-      local_fname
+
+      if resp
+        # Get filename from Content-Disposition header
+        disp_fname = resp.headers[:content_disposition].
+          split(/;\s+/).
+          select { |v| v =~ /filename\s*=/ }[0]
+        local_fname = /([""'])(?:(?=(\\?))\2.)*?\1/.
+          match(disp_fname).
+          to_s.gsub(/\A['"]+|['"]+\Z/, "")
+
+        File.open("#{output_path}/#{local_fname}", 'w') do
+          |f| f.write(resp.body)
+        end
+        local_fname
+      else
+        nil
+      end
     end
   end
 end
