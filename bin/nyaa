@@ -22,11 +22,11 @@ Filters:
 
 Options:
   EOM
+  opt :browser, "Use a text user interface to navigate Nyaa", :default => true
   opt :category, "Select a category to search in. See below for valid options.", :default => 'anime_english'
   opt :filter, "Select a filter for your search. See below for valid options.", :default => 'show_all'
   opt :outdir, "Select the download directory.", :default => File.expand_path('~/Downloads')
-  opt :size, "Show <i> results at a time. Must be between 1 and 100.", :type => :int, :default => 4
-  opt :page, "Start by showing the <i>th result page.", :type => :int, :default => 1
+  opt :size, "Browser mode: Show <i> results at a time. Must be between 1 and 100.", :type => :int, :default => 4
   opt :version, "Print the version and exit."
   opt :help, "Show this information and exit."
 end
@@ -39,10 +39,17 @@ unless Nyaa::FILS.has_key?(opts[:filter])
 end
 query = ARGV.join(' ')
 
-begin
-  n = Nyaa::Browser.new query, opts
-  n.start
-rescue Interrupt
-  puts "\nInterrupt received. Exiting."
+if opts[:browser]
+  begin
+    n = Nyaa::Browser.new query, opts
+    n.start
+  rescue Interrupt
+    puts "\nInterrupt received. Exiting."
+    exit
+  end
+else
+  # Not implemented yet
+  #n = Nyaa::CLI.new query, opts
+  #n.search
   exit
 end

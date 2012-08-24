@@ -1,7 +1,7 @@
 module Nyaa
   class Browser
     def initialize(query, opts)
-      @query       = URI.escape(query)
+      @query       = query
       @opts        = opts
       @opts[:size] = PSIZE if opts[:size] > PSIZE
       @opts[:size] = 1 if opts[:size] <= 1
@@ -9,6 +9,7 @@ module Nyaa
     end
 
     def start
+      #api = API.new
       @search = Search.new(@query, @opts[:category], @opts[:filter])
       data = @search.next.results
       part = partition(data, 0, @opts[:size])
@@ -68,7 +69,7 @@ module Nyaa
 
       format.display_line("\n\t[yellow]Displaying results "\
                      "#{start_count} through #{end_count} of #{PSIZE} "\
-                     "(Page ##{@opts[:page]})\n")
+                     "(Page ##{@search.offset})\n")
 
       prompt(data, results)
     end
@@ -103,7 +104,6 @@ module Nyaa
           prompt(data, results)
       when choice[0] == 'n'
         if @marker + @opts[:size] == 100
-          @opts[:page] += 1
           format.indent { format.display_line("=>[yellow][blink_fast] "\
                                     "Loading more results...[/]") }
           data = @search.next.results
