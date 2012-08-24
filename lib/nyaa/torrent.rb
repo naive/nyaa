@@ -1,10 +1,12 @@
-require 'nokogiri'
-
 module Nyaa
 
   class Torrent
-    attr_accessor :category, :status, :downloads, :comments
+    # Common
     attr_accessor :name, :link, :filesize, :seeders, :leechers
+    # NyaaTorrents specific
+    attr_accessor :category, :status, :downloads, :comments
+    # Derived
+    attr_accessor :health, :bytes
 
     def initialize (row = nil)
       if row.values[0] == 'trusted tlistrow'

@@ -1,45 +1,5 @@
-require 'nokogiri'
-require 'rest_client'
-require 'formatador'
-require 'uri'
-require 'nyaa/torrent'
-
 module Nyaa
   class Browser
-    BASE_URL = 'http://www.nyaa.eu/?page=torrents'
-    PSIZE = 100
-    CATS = {
-      'anime_all'         => '1_0',
-      'anime_raw'         => '1_11',
-      'anime_english'     => '1_37',
-      'anime_nonenglish'  => '1_38',
-      'anime_music_video' => '1_32',
-      'books_all'         => '2_0',
-      'books_raw'         => '2_13',
-      'books_english'     => '2_12',
-      'books_nonenglish'  => '2_39',
-      'audio_all'         => '3_0',
-      'audio_lossless'    => '3_14',
-      'audio_lossy'       => '3_15',
-      'pictures_all'      => '4_0',
-      'pictures_photos'   => '4_17',
-      'pictures_graphics' => '4_18',
-      'live_all'          => '5_0',
-      'live_raw'          => '5_20',
-      'live_english'      => '5_19',
-      'live_nonenglish'   => '5_21',
-      'live_promo'        => '5_22',
-      'software_all'      => '6_0',
-      'software_apps'     => '6_23',
-      'software_games'    => '6_24',
-    }
-    FILS = {
-      'show_all'       => '0',
-      'filter_remakes' => '1',
-      'trusted_only'   => '2',
-      'aplus_only'     => '3',
-    }
-
     def initialize(query, opts)
       @query       = URI.escape(query)
       @opts        = opts
@@ -48,23 +8,11 @@ module Nyaa
       @marker      = 0
     end
 
-    def search
-      data = harvest(@query, @opts[:page])
+    def start
+      @search = Search.new(@query, @opts[:category], @opts[:filter])
+      data = @search.next.results
       part = partition(data, 0, @opts[:size])
       display(data, part)
-    end
-
-    def harvest(query, page)
-      url = "#{BASE_URL}"
-      url << "&cats=#{CATS[@opts[:category]]}" if @opts[:category]
-      url << "&filter=#{FILS[@opts[:filter]]}" if @opts[:filter]
-      url << "&offset=#{page}" if @opts[:page]
-      url << "&term=#{query}" unless @query.empty?
-      doc = Nokogiri::HTML(RestClient.get(url))
-      torrents = []
-      rows = doc.css('div#main div.content table.tlist tr.tlistrow')
-      rows.each { |row| torrents << Torrent.new(row) }
-      torrents
     end
 
     def partition(ary, start, size)
@@ -158,7 +106,7 @@ module Nyaa
           @opts[:page] += 1
           format.indent { format.display_line("=>[yellow][blink_fast] "\
                                     "Loading more results...[/]") }
-          data = harvest(@query, @opts[:page])
+          data = @search.next.results
           part = partition(data, 0, @opts[:size])
         else
           part = partition(data, @marker + @opts[:size], @opts[:size])
@@ -175,8 +123,9 @@ module Nyaa
       when choice[0].match(/\d/)
         /(\d+)(\s*\|(.*))*/.match(choice) do |str|
           num = str[1].to_i - 1
-          file = download(data[num].link, @opts[:outdir])
-          if file
+          #file = download(data[num].link, @opts[:outdir])
+          download = Download.new(data[num].link, @opts[:outdir])
+          unless download.failed?
             format.indent {
               format.display_line(
                 "=>[green] Downloaded '#{file}' successfully.[/]")
@@ -195,35 +144,35 @@ module Nyaa
       end
     end
 
-    def download(url, output_path)
-      retries = 3
-
-      begin
-        resp = RestClient.get(url)
-      rescue StandardError => e
-        if retries > 0
-          retries -= 1
-          sleep 1
-          retry
-        end
-      end
-
-      if resp
-        # Get filename from Content-Disposition header
-        disp_fname = resp.headers[:content_disposition].
-          split(/;\s+/).
-          select { |v| v =~ /filename\s*=/ }[0]
-        local_fname = /([""'])(?:(?=(\\?))\2.)*?\1/.
-          match(disp_fname).
-          to_s.gsub(/\A['"]+|['"]+\Z/, "")
-
-        File.open("#{output_path}/#{local_fname}", 'w') do
-          |f| f.write(resp.body)
-        end
-        local_fname
-      else
-        nil
-      end
-    end
+#    def download(url, output_path, retries = 3)
+#      retry_count = retries
+#
+#      begin
+#        resp = RestClient.get(url)
+#      rescue StandardError => e
+#        if retry_count > 0
+#          retry_count -= 1
+#          sleep 1
+#          retry
+#        end
+#      end
+#
+#      if resp
+#        # Get filename from Content-Disposition header
+#        disp_fname = resp.headers[:content_disposition].
+#          split(/;\s+/).
+#          select { |v| v =~ /filename\s*=/ }[0]
+#        local_fname = /([""'])(?:(?=(\\?))\2.)*?\1/.
+#          match(disp_fname).
+#          to_s.gsub(/\A['"]+|['"]+\Z/, "")
+#
+#        File.open("#{output_path}/#{local_fname}", 'w') do
+#          |f| f.write(resp.body)
+#        end
+#        local_fname
+#      else
+#        nil
+#      end
+#    end
   end
 end
