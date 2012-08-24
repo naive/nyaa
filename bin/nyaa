@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'nyaa'
-require 'trollop'
+require(File.expand_path('../../lib/nyaa', __FILE__))
 
 opts = Trollop::options do
   version "nyaa v#{Nyaa::VERSION} (c) 2012 David Palma http://github.com/mistofvongola"
@@ -32,17 +31,17 @@ Options:
   opt :help, "Show this information and exit."
 end
 
-unless Nyaa::Browser::CATS.has_key?(opts[:category])
+unless Nyaa::CATS.has_key?(opts[:category])
   Trollop::die :category, "is not a valid category"
 end
-unless Nyaa::Browser::FILS.has_key?(opts[:filter])
+unless Nyaa::FILS.has_key?(opts[:filter])
   Trollop::die :filter, "is not a valid filter"
 end
 query = ARGV.join(' ')
 
 begin
   n = Nyaa::Browser.new query, opts
-  n.search
+  n.start
 rescue Interrupt
   puts "\nInterrupt received. Exiting."
   exit
