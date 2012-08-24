@@ -4,18 +4,18 @@ module Nyaa
 
     def initialize(opts)
       @opts    = opts
-      @results = search
+      @results = []
     end
 
-    def search
-      results  = []
-      @search  = Search.new(@opts[:query], @opts[:category], @opts[:filter])
-      @results = @search.next.results
+    def search(query = nil)
+      search = Search.new(@opts[:query],@opts[:category],@opts[:filter])
+      @results = search.next.results
     end
 
-    def download(target, destination)
-      @download = Download.new(target, destination)
-      @download.save
+    def get(file)
+      file.is_a?(Nyaa::Torrent) ? target = file.link : target = file
+      dl = Download.new(target, @opts[:outdir])
+      dl.save
     end
 
   end

@@ -15,13 +15,17 @@ rescue LoadError => e
   puts "LoadError: #{e.message}"
 end
 
-# internal
+# internal api
 require 'nyaa/version'
 require 'nyaa/constants'
 require 'nyaa/torrent'
 require 'nyaa/search'
 require 'nyaa/download'
+require 'nyaa/api'
+
+# internal interface
 require 'nyaa/browser'
+require 'nyaa/cli'
 
 module Nyaa
   class << self

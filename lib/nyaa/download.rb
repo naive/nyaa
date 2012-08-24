@@ -7,7 +7,7 @@ module Nyaa
 
     def initialize(url, path, retries = 3)
       self.target      = url
-      self.destination = File.expand_path(path)
+      self.destination = sane_path(path)
       self.retries     = retries
 
       self.response = request
@@ -78,6 +78,18 @@ module Nyaa
       else
         nil
       end
+    end
+
+    def sane_path(path)
+      if path.nil?
+        path = File.expand_path('~')
+      else
+        newpath = File.expand_path(path)
+        unless File.directory?(newpath) && File.writable?(newpath)
+          path = '/tmp'
+        end
+      end
+      path
     end
 
   end

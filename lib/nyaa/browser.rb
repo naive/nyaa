@@ -1,16 +1,14 @@
 module Nyaa
   class Browser
-    def initialize(query, opts)
-      @query       = query
-      @opts        = opts
-      @opts[:size] = PSIZE if opts[:size] > PSIZE
-      @opts[:size] = 1 if opts[:size] <= 1
+    def initialize(global_opts, cmd_opts)
+      @opts        = global_opts.merge(cmd_opts)
+      @opts[:size] = PSIZE if cmd_opts[:size] > PSIZE
+      @opts[:size] = 1 if cmd_opts[:size] <= 1
       @marker      = 0
     end
 
     def start
-      #api = API.new
-      @search = Search.new(@query, @opts[:category], @opts[:filter])
+      @search = Search.new(@opts[:query], @opts[:category], @opts[:filter])
       data = @search.next.results
       part = partition(data, 0, @opts[:size])
       display(data, part)

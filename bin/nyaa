@@ -1,13 +1,19 @@
 #!/usr/bin/env ruby
 
+# For use/testing when no gem is installed
 require(File.expand_path('../../lib/nyaa', __FILE__))
 
+SUB_COMMANDS = %w(browser script)
 opts = Trollop::options do
   version "nyaa v#{Nyaa::VERSION} (c) 2012 David Palma http://github.com/mistofvongola"
   banner <<-EOM
-The nyaa gem is a simple CLI browser for NyaaTorrents.
+Nyaa is an interactive text browser for NyaaTorrents. It also supports CLI mode scripting.
+
 Usage:
-    nyaa [options] "my search"
+    nyaa browser [options] "my search" # Interactive Browser
+    nyaa script [options] "my search" # Scripting mode
+
+    See nyaa [subcommand] -h for subcommand options and help
 
 Categories:
   anime_all, anime_raw, anime_english, anime_nonenglish, anime_music_video
@@ -20,16 +26,30 @@ Categories:
 Filters:
   show_all, filter_remakes, trusted_only, aplus_only
 
-Options:
+Global Options:
   EOM
-  opt :browser, "Use a text user interface to navigate Nyaa", :default => true
   opt :category, "Select a category to search in. See below for valid options.", :default => 'anime_english'
   opt :filter, "Select a filter for your search. See below for valid options.", :default => 'show_all'
-  opt :outdir, "Select the download directory.", :default => File.expand_path('~/Downloads')
-  opt :size, "Browser mode: Show <i> results at a time. Must be between 1 and 100.", :type => :int, :default => 4
+  opt :outdir, "Select the download directory.", :default => File.expand_path('~')
   opt :version, "Print the version and exit."
   opt :help, "Show this information and exit."
+  stop_on SUB_COMMANDS
 end
+
+cmd = ARGV.shift # get the subcommand
+cmd_opts = case cmd
+  when "browser" # parse browser opts
+    Trollop::options do
+      opt :size, "Browser mode: Show <i> results at a time. Must be between 1 and 100.", :type => :int, :default => 4
+    end
+  when "script" # parse script opts
+    Trollop::options do
+      opt :batch, "Script mode: Results to return in a single run. Must be between 1 and 100.", :type => :int, :default => 10
+      opt :page, "Script mode: The NyaaTorrents result page (100 results/page).", :type => :int, :default => 1
+    end
+  else
+    Trollop::die "unknown subcommand #{cmd.inspect}"
+  end
 
 unless Nyaa::CATS.has_key?(opts[:category])
   Trollop::die :category, "is not a valid category"
@@ -37,19 +57,29 @@ end
 unless Nyaa::FILS.has_key?(opts[:filter])
   Trollop::die :filter, "is not a valid filter"
 end
-query = ARGV.join(' ')
 
-if opts[:browser]
+opts[:query] = ARGV.join(' ')
+
+#nyaa = Nyaa::API.new(opts)
+if cmd == 'browser'
   begin
-    n = Nyaa::Browser.new query, opts
+    browser = Nyaa::Browser.new(opts, cmd_opts)
+    browser.start
+  rescue Interrupt
+    puts "\nInterrupt received. Exiting."
+    exit
+  end
+elsif cmd == 'script'
+  puts "#{cmd.inspect} not implemented yet."
+  exit
+  begin
+    n = Nyaa::CLI.new(nyaa, cmd_opts)
     n.start
   rescue Interrupt
     puts "\nInterrupt received. Exiting."
     exit
   end
 else
-  # Not implemented yet
-  #n = Nyaa::CLI.new query, opts
-  #n.search
-  exit
+  log("ERROR: Trollop didn't properly handly unknown subcommand")
+  exit 1
 end
