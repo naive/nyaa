@@ -12,6 +12,8 @@ module Nyaa
 
       self.response = request
       self.filename = name
+
+      @fail = nil
     end
 
     def save
@@ -40,7 +42,6 @@ module Nyaa
         @fail = true
       end
       @fail = false
-      puts "Failed request? #{@fail.inspect}"
       response
     end
 

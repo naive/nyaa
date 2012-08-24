@@ -6,7 +6,8 @@ module Nyaa
       @opts[:size] = PSIZE if opts[:size] > PSIZE
       @opts[:size] = 1 if opts[:size] <= 1
       @marker      = 0
-    end 
+    end
+
     def start
       @search = Search.new(@query, @opts[:category], @opts[:filter])
       data = @search.next.results
@@ -122,7 +123,6 @@ module Nyaa
       when choice[0].match(/\d/)
         /(\d+)(\s*\|(.*))*/.match(choice) do |str|
           num = str[1].to_i - 1
-          #file = download(data[num].link, @opts[:outdir])
           download = Download.new(data[num].link, @opts[:outdir])
           download.save
           unless download.failed?
@@ -144,35 +144,6 @@ module Nyaa
       end
     end
 
-#    def download(url, output_path, retries = 3)
-#      retry_count = retries
-#
-#      begin
-#        resp = RestClient.get(url)
-#      rescue StandardError => e
-#        if retry_count > 0
-#          retry_count -= 1
-#          sleep 1
-#          retry
-#        end
-#      end
-#
-#      if resp
-#        # Get filename from Content-Disposition header
-#        disp_fname = resp.headers[:content_disposition].
-#          split(/;\s+/).
-#          select { |v| v =~ /filename\s*=/ }[0]
-#        local_fname = /([""'])(?:(?=(\\?))\2.)*?\1/.
-#          match(disp_fname).
-#          to_s.gsub(/\A['"]+|['"]+\Z/, "")
-#
-#        File.open("#{output_path}/#{local_fname}", 'w') do
-#          |f| f.write(resp.body)
-#        end
-#        local_fname
-#      else
-#        nil
-#      end
-#    end
   end
+
 end
