@@ -1,6 +1,6 @@
 # Nyaa [![Build Status](https://secure.travis-ci.org/mistofvongola/nyaa.png)](http://travis-ci.org/mistofvongola/nyaa) [![Dependency Status](https://gemnasium.com/mistofvongola/nyaa.png)](http://gemnasium.com/mistofvongola/nyaa)
 
-Nyaa is a CLI to NyaaTorrents. You can browse, search, and download. Nifty.
+Nyaa is a CLI to Nyaa.eu. You can browse, search, and download. Nifty.
 
 ## Installation
 
