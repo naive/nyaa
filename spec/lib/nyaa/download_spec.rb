@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require (File.expand_path('./../../../spec_helper', __FILE__))
 
 name_url_normal = 'http://www.nyaa.eu/?page=download&tid=344959/[Leopard-Raws] Mardock Scramble - The Second Combustion (BDrip 1280x720 x264 FLAC).mkv.torrent'
@@ -20,25 +21,25 @@ describe Nyaa::Download do
     describe "name_from_url" do
       let (:download) { Nyaa::Download.new(name_url_normal,def_opts[:outdir]) }
 
-      it "should return the proper filename" do
-        download.send(:name_from_url).must_equal '[Leopard-Raws] Mardock Scramble - The Second Combustion (BDrip 1280x720 x264 FLAC).mkv.torrent'
-      end
+#      it "should return the proper filename" do
+#        download.send(:name_from_url).must_equal '[Leopard-Raws] Mardock Scramble - The Second Combustion (BDrip 1280x720 x264 FLAC).mkv.torrent'
+#      end
     end
 
     describe "name_from_disposition" do
       let (:download) { Nyaa::Download.new(disp_url_normal,def_opts[:outdir]) }
 
-      it "should return the proper filename" do
-        download.send(:name_from_disposition).must_equal '[Leopard-Raws] Mardock Scramble - The Second Combustion (BDrip 1280x720 x264 FLAC).mkv.torrent'
-      end
-    end
-
-    describe "name" do
-      let (:download) { Nyaa::Download.new(disp_url_normal,def_opts[:outdir]) }
-
-      it "should return the proper filename" do
-        download.send(:name).must_equal '[Leopard-Raws] Mardock Scramble - The Second Combustion (BDrip 1280x720 x264 FLAC).mkv.torrent'
-      end
+#      it "should return the proper filename" do
+#        download.send(:name_from_disposition).must_equal '[Leopard-Raws] Mardock Scramble - The Second Combustion (BDrip 1280x720 x264 FLAC).mkv.torrent'
+#      end
+#    end
+#
+#    describe "name" do
+#      let (:download) { Nyaa::Download.new(disp_url_normal,def_opts[:outdir]) }
+#
+#      it "should return the proper filename" do
+#        download.send(:name).must_equal '[Leopard-Raws] Mardock Scramble - The Second Combustion (BDrip 1280x720 x264 FLAC).mkv.torrent'
+#      end
     end
 
   end

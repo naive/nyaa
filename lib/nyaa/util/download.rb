@@ -1,24 +1,24 @@
+# -*- encoding : utf-8 -*-
 module Nyaa
   class Download
-    # common
     attr_accessor :target, :destination, :retries
-    # derived
     attr_accessor :response, :filename
 
     def initialize(url, path, retries = 3)
       self.target      = url
       self.destination = sane_path(path)
       self.retries     = retries
-
-      self.response = request
-      self.filename = name
+      self.response    = request
+      self.filename    = name
 
       @fail = nil
     end
 
+    # HACK Fix all of this, no need for initialization
     def save
+      filename = name
       unless @fail
-        File.open("#{self.destination}/#{self.filename}", 'w') do
+        File.open("#{self.destination}/#{filename}", 'w') do
           |f| f.write(self.response.body)
         end
       end
@@ -91,7 +91,5 @@ module Nyaa
       end
       path
     end
-
   end
-
 end

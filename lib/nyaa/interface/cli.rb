@@ -1,4 +1,6 @@
 # -*- encoding : utf-8 -*-
 module Nyaa
-    VERSION = '0.3.0'
+  class CLI
+    # HACK
+  end
 end

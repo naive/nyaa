@@ -1,6 +1,8 @@
+# -*- encoding : utf-8 -*-
 module Nyaa
   class Search
-    attr_accessor :query, :category, :filter, :offset, :results
+    attr_accessor :query, :category, :filter
+    attr_accessor :offset, :count, :results
 
     def initialize(query, cat = nil, fil = nil)
       self.query    = URI.escape(query)
@@ -8,17 +10,28 @@ module Nyaa
       self.filter   = fil ? FILS[fil] : nil
       self.offset   = 0
       self.results  = []
+      self.count    = 1.0/0.0
     end
 
-    def next
-      # Empty last page
-      self.results = []
+    def more
       self.offset += 1
-      extract
-      self
+      if self.results.length < self.count
+        extract
+      else
+        puts "No more results"
+      end
+        self
     end
 
     private
+
+    def extract(page = self.offset)
+      raw = fetch(page)
+      doc = Nokogiri::HTML(raw)
+      self.count = doc.css('span.notice').text.match(/\d+/).to_i
+      rows = doc.css('div#main div.content table.tlist tr.tlistrow')
+      rows.each { |row| self.results << Torrent.new(row) }
+    end
 
     def fetch(page)
       url = "#{BASE_URL}"
@@ -28,20 +41,5 @@ module Nyaa
       url << "&term=#{query}" unless query.empty?
       open(url).read
     end
-
-    def extract
-      raw = fetch(offset)
-      doc = Nokogiri::HTML(raw)
-      rows = doc.css('div#main div.content table.tlist tr.tlistrow')
-      rows.each { |row| self.results << Torrent.new(row) }
-    end
-
-    # TODO Caching
-    def dump
-    end
-
-    def load
-    end
   end
-
 end

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Nyaa
 
     BASE_URL = 'http://www.nyaa.eu/?page=torrents'

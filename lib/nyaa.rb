@@ -1,9 +1,8 @@
+# -*- encoding : utf-8 -*-
 $:.unshift File.dirname(__FILE__) # For use/testing when no gem is installed
-
 # stdlib
 require 'open-uri'
 require 'tempfile'
-require 'logger'
 
 # third party
 begin
@@ -20,23 +19,10 @@ require 'nyaa/version'
 require 'nyaa/constants'
 require 'nyaa/torrent'
 require 'nyaa/search'
-require 'nyaa/download'
-require 'nyaa/api'
+
+# internal util
+require 'nyaa/util/download'
 
 # internal interface
-require 'nyaa/browser'
-require 'nyaa/cli'
-
-module Nyaa
-  class << self
-    attr_accessor :debug
-    attr_accessor :logger
-
-    def log(message)
-      logger.debug { message }
-    end
-  end
-
-  self.debug = false
-  @logger ||= ::Logger.new(STDOUT)
-end
+require 'nyaa/interface'
+require 'nyaa/interface/browser'
