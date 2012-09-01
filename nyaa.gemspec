@@ -18,7 +18,6 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'rake'
   s.add_development_dependency 'minitest'
-  s.add_development_dependency 'turn', '< 0.8.3'
   s.add_development_dependency 'webmock'
   s.add_development_dependency 'vcr'
   s.add_runtime_dependency 'trollop', '~> 1.16.2'

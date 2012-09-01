@@ -1,4 +1,4 @@
-# Nyaa [![Build Status](https://secure.travis-ci.org/mistofvongola/nyaa.png)](http://travis-ci.org/mistofvongola/nyaa) [![Dependency Status](https://gemnasium.com/mistofvongola/nyaa.png)](http://gemnasium.com/mistofvongola/nyaa)
+# Nyaa
 
 Nyaa is a CLI to Nyaa.eu. You can browse, search, and download. Nifty.
 
@@ -23,7 +23,6 @@ For a list of categories and filters, see `nyaa -h`.
 ![](https://github.com/mistofvongola/nyaa/raw/master/screenshots/screenshot_3.png)
 
 ## Contributing
-0. See HACKING file for style guidelines
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Added some feature'`)
@@ -32,8 +31,8 @@ For a list of categories and filters, see `nyaa -h`.
 
 ## License
 
-See LICENSE file.
+MIT License. See LICENSE file for details.
 
 ## Authors
 
-See AUTHORS file.
+David Palma

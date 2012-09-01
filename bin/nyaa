@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 # For use/testing when no gem is installed
-require(File.expand_path('../../lib/nyaa', __FILE__))
+require './lib/nyaa'
 
 opts = Trollop::options do
   version "nyaa v#{Nyaa::VERSION} (c) 2012 David Palma http://github.com/mistofvongola"

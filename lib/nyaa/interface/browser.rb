@@ -24,6 +24,12 @@ module Nyaa
     end
 
     def torrent_info(data, torrent)
+#    def torrent_info(data, results)
+#      rows = []
+#      results.each_with_index do |t, i|
+#        rows << [i, t.name[0..79], t.filesize, t.seeders, t.leechers, t.downloads, t.comments ]
+#      end
+#      puts Terminal::Table.new :headings => ['#', 'Name', 'Size', 'SE', 'LE', 'DLs', 'Msg' ], :rows => rows
       case torrent.status
       when 'A+'      then flag = 'blue'
       when 'Trusted' then flag = 'green'
@@ -33,7 +39,7 @@ module Nyaa
 
       row = Formatador.new
       row.display_line("#{data.index(torrent)+1}. "\
-                          "[#{flag}]#{torrent.name}[/]")
+                          "[#{flag}]#{torrent.name[0..70]}[/]")
       row.indent {
         row.display_line(
                        "[bold]Size: [purple]#{torrent.filesize}[/] "\
@@ -74,6 +80,7 @@ module Nyaa
       end
       format.display_line( "[bold]#{data[0].category}\n[/]" )
 
+      #torrent_info(data, results)
       results.each do |torrent|
         torrent_info(data, torrent)
       end
