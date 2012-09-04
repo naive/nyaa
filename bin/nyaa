@@ -28,7 +28,7 @@ Options:
   opt :category, "Select a category to search in. See below for valid options.", :default => 'anime_english'
   opt :filter, "Select a filter for your search. See below for valid options.", :default => 'show_all'
   opt :outdir, "Select the download directory.", :default => File.expand_path('~')
-  opt :script, "Enable scripting mode."
+  opt :script, "Enable scripting mode. NOT IMPLEMENTED YET."
   opt :version, "Print the version and exit."
   opt :help, "Show this information and exit."
 end
@@ -43,7 +43,8 @@ end
 opts[:query] = ARGV.join(' ')
 
 begin
-  nyaa = Nyaa::Interface.new(opts)
+  nyaa = Nyaa::Browser.new(opts)
+  nyaa.start
 rescue Interrupt
   puts "\nInterrupt received. Exiting."
   exit

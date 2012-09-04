@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'minitest'
   s.add_development_dependency 'webmock'
   s.add_development_dependency 'vcr'
-  s.add_runtime_dependency 'trollop', '~> 1.16.2'
+  s.add_runtime_dependency 'trollop', '~> 2.0'
   s.add_runtime_dependency 'formatador', '~> 0.2.3'
   s.add_runtime_dependency 'nokogiri', '~> 1.5.5'
   s.add_runtime_dependency 'rest-client', '~> 1.6.7'

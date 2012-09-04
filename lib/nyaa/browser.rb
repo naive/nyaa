@@ -20,16 +20,11 @@ module Nyaa
       @marker = start
       size = PSIZE if size > PSIZE
       part = ary[start, size]
+      part = [] if part.nil?
       part
     end
 
     def torrent_info(data, torrent)
-#    def torrent_info(data, results)
-#      rows = []
-#      results.each_with_index do |t, i|
-#        rows << [i, t.name[0..79], t.filesize, t.seeders, t.leechers, t.downloads, t.comments ]
-#      end
-#      puts Terminal::Table.new :headings => ['#', 'Name', 'Size', 'SE', 'LE', 'DLs', 'Msg' ], :rows => rows
       case torrent.status
       when 'A+'      then flag = 'blue'
       when 'Trusted' then flag = 'green'
@@ -39,7 +34,7 @@ module Nyaa
 
       row = Formatador.new
       row.display_line("#{data.index(torrent)+1}. "\
-                          "[#{flag}]#{torrent.name[0..70]}[/]")
+                          "#{torrent.name[0..70]}[/]")
       row.indent {
         row.display_line(
                        "[bold]Size: [purple]#{torrent.filesize}[/] "\
@@ -47,7 +42,7 @@ module Nyaa
                        "[bold]LE: [red]#{torrent.leechers}[/] "\
                        "[bold]DLs: [yellow]#{torrent.downloads}[/] "\
                        "[bold]Msg: [blue]#{torrent.comments}[/]")
-        row.display_line("[normal]#{torrent.link}[/]")
+        row.display_line("[#{flag}]#{torrent.link}[/]")
       }
     end
 
@@ -62,7 +57,6 @@ module Nyaa
       end_count = @marker + @opts[:size]
       end_count = PSIZE if end_count > PSIZE
 
-      # Page/count
       Formatador.display_line("\n\t[yellow]Displaying results "\
                      "#{start_count} through #{end_count} of #{PSIZE} "\
                      "(Page ##{@search.offset})\n")
@@ -72,15 +66,15 @@ module Nyaa
       format = Formatador.new
       header_info
 
-      if data[0].nil? || results[0].nil?
-        format.display_line( "[normal]No matches found. "\
-                       "Try another category. See --help.[/]\n")
+      # TODO Move this into header_info (Needs category titles in constants)
+      if results.empty?
+        format.display_line( "[normal]End of results. "\
+                       "For more search options, see --help.[/]\n")
         format.display_line("\t[yellow]Exiting.[/]")
         exit
       end
       format.display_line( "[bold]#{data[0].category}\n[/]" )
 
-      #torrent_info(data, results)
       results.each do |torrent|
         torrent_info(data, torrent)
       end
@@ -117,7 +111,6 @@ module Nyaa
       when choice[0] == 'n'
         if @marker + @opts[:size] == 100
           format.display_line("[yellow]Loading more results...[/]")
-          # TODO Handle no more results
           data = @search.more.results
           part = partition(data, 0, @opts[:size])
         else

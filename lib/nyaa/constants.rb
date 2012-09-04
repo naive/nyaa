@@ -4,6 +4,7 @@ module Nyaa
     BASE_URL = 'http://www.nyaa.eu/?page=torrents'
     PSIZE = 100
 
+    # TODO Add category (sym) => {id, title}
     CATS = {
       'anime_all'         => '1_0',
       'anime_raw'         => '1_11',

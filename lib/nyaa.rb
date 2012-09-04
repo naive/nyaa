@@ -20,9 +20,6 @@ require 'nyaa/constants'
 require 'nyaa/torrent'
 require 'nyaa/search'
 
-# internal util
-require 'nyaa/util/download'
-
-# internal interface
-require 'nyaa/interface'
-require 'nyaa/interface/browser'
+# internal tools
+require 'nyaa/browser'
+require 'nyaa/downloader'

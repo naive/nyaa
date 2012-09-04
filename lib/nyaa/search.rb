@@ -18,6 +18,7 @@ module Nyaa
       if self.results.length < self.count
         extract
       else
+        self.results = []
         puts "No more results"
       end
         self
@@ -25,6 +26,7 @@ module Nyaa
 
     private
 
+    # TODO Add page (offset) caching
     def extract(page = self.offset)
       raw = fetch(page)
       doc = Nokogiri::HTML(raw)
