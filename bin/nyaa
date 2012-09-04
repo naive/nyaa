@@ -33,10 +33,10 @@ Options:
   opt :help, "Show this information and exit."
 end
 
-unless Nyaa::CATS.has_key?(opts[:category])
+unless Nyaa::CATS.has_key?(opts[:category].to_sym)
   Trollop::die :category, "is not a valid category"
 end
-unless Nyaa::FILS.has_key?(opts[:filter])
+unless Nyaa::FILS.has_key?(opts[:filter].to_sym)
   Trollop::die :filter, "is not a valid filter"
 end
 
