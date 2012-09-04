@@ -29,7 +29,7 @@ module Nyaa
       when 'A+'      then flag = 'blue'
       when 'Trusted' then flag = 'green'
       when 'Remake'  then flag = 'red'
-      else                flag = 'normal'
+      else                flag = 'yellow'
       end
 
       row = Formatador.new
@@ -42,7 +42,7 @@ module Nyaa
                        "[bold]LE: [red]#{torrent.leechers}[/] "\
                        "[bold]DLs: [yellow]#{torrent.downloads}[/] "\
                        "[bold]Msg: [blue]#{torrent.comments}[/]")
-        row.display_line("[#{flag}]#{torrent.link}[/]")
+        row.display_line("[bold]DL:[/] [#{flag}]#{torrent.link}[/]")
       }
     end
 
@@ -104,9 +104,9 @@ module Nyaa
       when choice[0] == 'q' then exit
       when choice[0] == 'h'
         format.display_line(
-          "[white]The color of an entry represents its status:[/]")
+          "[white]The color of an entry's DL link represents its status:[/]")
         format.display_line(
-          "[blue]A+[/], [green]Trusted[/], Normal, or [red]Remake[/]")
+          "[blue]A+[/], [green]Trusted[/], [yellow]Normal[/], or [red]Remake[/]")
         prompt(data, results)
       when choice[0] == 'n'
         if @marker + @opts[:size] == 100
