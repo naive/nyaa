@@ -6,8 +6,8 @@ module Nyaa
 
     def initialize(query, cat = nil, fil = nil)
       self.query    = URI.escape(query)
-      self.category = cat ? CATS[cat.to_sym] : nil
-      self.filter   = fil ? FILS[fil.to_sym] : nil
+      self.category = cat ? CATS[cat.to_sym][:id] : nil
+      self.filter   = fil ? FILS[fil.to_sym][:id] : nil
       self.offset   = 0
       self.results  = []
       self.count    = 1.0/0.0
