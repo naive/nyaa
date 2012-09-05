@@ -47,8 +47,11 @@ module Nyaa
     end
 
     def header_info
-      Formatador.display_line( "\t[yellow]NyaaTorrents >> "\
+      format = Formatador.new
+      format.display_line( "\t[yellow]NyaaTorrents >> "\
                      "Browse | Anime, manga, and music[/]\n" )
+      format.display_line(
+        "[bold]#{CATS[@opts[:category].to_sym][:title]}\n[/]" )
     end
 
     def footer_info
@@ -66,14 +69,11 @@ module Nyaa
       format = Formatador.new
       header_info
 
-      # TODO Move this into header_info (Needs category titles in constants)
       if results.empty?
-        format.display_line( "[normal]End of results. "\
-                       "For more search options, see --help.[/]\n")
-        format.display_line("\t[yellow]Exiting.[/]")
+        format.display_line( "[normal]End of results.")
+        format.display_line("For more search options, see --help.[/]\n")
         exit
       end
-      format.display_line( "[bold]#{data[0].category}\n[/]" )
 
       results.each do |torrent|
         torrent_info(data, torrent)
@@ -84,7 +84,6 @@ module Nyaa
     end
 
     def prompt(data, results)
-      # Help
       format = Formatador.new
       format.display_line("[yellow]Help: q to quit, "\
                      "h for display help, "\
@@ -92,7 +91,6 @@ module Nyaa
                      "or a number to download that choice.")
       format.display("[bold]>[/] ")
 
-      # handle input
       choice = STDIN.gets
       if choice.nil?
         choice = ' '
