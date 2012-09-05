@@ -2,6 +2,24 @@
 
 Nyaa is a CLI to Nyaa.eu. You can browse, search, and download. Nifty.
 
+## Features
+
+   * Dev
+     * Interface: Add status colors (aplus, trusted, remake, etc.)
+     * Fix crash when no more results found and paginate
+   * 0.3.0
+     * Remove curl dependency
+     * Add help command
+   * 0.1.2
+     * Internal/design changes
+   * 0.1.1
+     * Internal/design changes
+   * 0.1.0
+     * Download with curl
+     * Browsing with pagination
+     * Search by category, filter, page, and query
+     * Initial release
+
 ## Installation
 
     gem install nyaa
