@@ -1,10 +1,14 @@
 # -*- encoding : utf-8 -*-
 module Nyaa
 
-    BASE_URL = 'http://www.nyaa.eu/?page=torrents'
+    BASE_URL = 'http://www.nyaa.eu/?page=search'
     PSIZE = 100
 
     CATS = {
+      :all_categories    => {
+        :id    => '0_0',
+        :title => 'All Categories'
+    },
       :anime_all         => {
         :id    => '1_0',
         :title => 'Anime'

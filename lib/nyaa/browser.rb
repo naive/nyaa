@@ -6,13 +6,17 @@ module Nyaa
       @opts[:size] = PSIZE if opts[:size] > PSIZE
       @opts[:size] = 1 if opts[:size] <= 1
       @marker      = 0
+      @format      = Formatador.new
+      @page        = 0 # Current browser page
+      start
     end
 
     def start
       @search = Search.new(@opts[:query], @opts[:category], @opts[:filter])
-      data = @search.more.results
-      part = partition(data, 0, @opts[:size])
-      screen(data, part)
+      page_results = @search.more.get_results # Retrieve first page of results
+      @page += 1
+      part = partition(page_results, 0, @opts[:size])
+      screen(page_results, part)
     end
 
     def partition(ary, start, size)
@@ -24,7 +28,7 @@ module Nyaa
       part
     end
 
-    def torrent_info(data, torrent)
+    def torrent_info(page_results, torrent)
       case torrent.status
       when 'A+'      then flag = 'blue'
       when 'Trusted' then flag = 'green'
@@ -32,25 +36,23 @@ module Nyaa
       else                flag = 'yellow'
       end
 
-      row = Formatador.new
-      row.display_line("#{data.index(torrent)+1}. "\
+      @format.display_line("#{page_results.index(torrent)+1}. "\
                           "#{torrent.name[0..70]}[/]")
-      row.indent {
-        row.display_line(
+      @format.indent {
+        @format.display_line(
                        "[bold]Size: [purple]#{torrent.filesize}[/] "\
                        "[bold]SE: [green]#{torrent.seeders}[/] "\
                        "[bold]LE: [red]#{torrent.leechers}[/] "\
                        "[bold]DLs: [yellow]#{torrent.downloads}[/] "\
                        "[bold]Msg: [blue]#{torrent.comments}[/]")
-        row.display_line("[bold]DL:[/] [#{flag}]#{torrent.link}[/]")
+        @format.display_line("[bold]DL:[/] [#{flag}]#{torrent.link}[/]")
       }
     end
 
     def header_info
-      format = Formatador.new
-      format.display_line( "\t[yellow]NyaaTorrents >> "\
+      @format.display_line( "\t[yellow]NyaaTorrents >> "\
                      "Browse | Anime, manga, and music[/]\n" )
-      format.display_line(
+      @format.display_line(
         "[bold]#{CATS[@opts[:category].to_sym][:title]}\n[/]" )
     end
 
@@ -60,36 +62,36 @@ module Nyaa
       end_count = @marker + @opts[:size]
       end_count = PSIZE if end_count > PSIZE
 
-      Formatador.display_line("\n\t[yellow]Displaying results "\
+      @format.display_line("\n\t[yellow]Displaying results "\
                      "#{start_count} through #{end_count} of #{PSIZE} "\
-                     "(Page ##{@search.offset})\n")
+                     "(Page ##{@page})\n")
+      #@format.display_line("\n\t[yellow]Displaying results "\
+      #               "#{start_count} through #{end_count} of #{@search.count}")
     end
 
-    def screen(data, results)
-      format = Formatador.new
+    def screen(page_results, screen_items)
       header_info
 
-      if results.empty?
-        format.display_line( "[normal]End of results.")
-        format.display_line("For more search options, see --help.[/]\n")
+      if screen_items.empty?
+        @format.display_line( "[normal]End of results.")
+        @format.display_line("For more search options, see --help.[/]\n")
         exit
       end
 
-      results.each do |torrent|
-        torrent_info(data, torrent)
+      screen_items.each do |torrent|
+        torrent_info(page_results, torrent)
       end
 
       footer_info
-      prompt(data, results)
+      prompt(page_results, screen_items)
     end
 
-    def prompt(data, results)
-      format = Formatador.new
-      format.display_line("[yellow]Help: q to quit, "\
+    def prompt(page_results, screen_items)
+      @format.display_line("[yellow]Help: q to quit, "\
                      "h for display help, "\
                      "n/p for pagination, "\
                      "or a number to download that choice.")
-      format.display("[bold]>[/] ")
+      @format.display("[bold]>[/] ")
 
       choice = STDIN.gets
       if choice.nil?
@@ -99,46 +101,70 @@ module Nyaa
       end
 
       case
-      when choice[0] == 'q' then exit
+      when choice[0] == 'q' then @search.purge && exit
+        prompt(page_results, screen_items)
+      when choice[0] == 'n' then paginate(page_results)
+      when choice[0] == 'p' then reverse_paginate(page_results, screen_items)
+      when choice[0].match(/\d/) then retrieve(choice, page_results, screen_items)
       when choice[0] == 'h'
-        format.display_line(
-          "[white]The color of an entry's DL link represents its status:[/]")
-        format.display_line(
-          "[blue]A+[/], [green]Trusted[/], [yellow]Normal[/], or [red]Remake[/]")
-        prompt(data, results)
-      when choice[0] == 'n'
-        if @marker + @opts[:size] == 100
-          format.display_line("[yellow]Loading more results...[/]")
-          data = @search.more.results
-          part = partition(data, 0, @opts[:size])
-        else
-          part = partition(data, @marker + @opts[:size], @opts[:size])
+        @format.display_line("[normal]The color of an entry's DL link "\
+                             "represents its status:[/]")
+        @format.display_line("[blue]A+[/], [green]Trusted[/], "\
+                             "[yellow]Normal[/], or [red]Remake[/]")
+      else
+        @format.display_line("[red]Unrecognized option.[/]")
+        prompt(page_results, screen_items)
+      end
+    end
+
+    def paginate(page_results)
+      if @marker + @opts[:size] == 100
+        @format.display_line("[yellow]Loading more results...[/]")
+        if @page == @search.offset
+          page_results = @search.more.get_results
+        else # @page < @search.offset
+          page_results = @search.cached(@page + 1)
         end
-        screen(data, part)
-      when choice[0] == 'p'
-        if @marker < 1
-          format.display_line("[red]Already at page one.[/]")
-          prompt(data, results)
-        else
-          part = partition(data, @marker - @opts[:size], @opts[:size])
-          screen(data, part)
-        end
-      when choice[0].match(/\d/)
-        /(\d+)(\s*\|(.*))*/.match(choice) do |str|
-          num = str[1].to_i - 1
-          download = Download.new(data[num].link, @opts[:outdir])
-          download.save
-          unless download.failed?
-            format.display_line(
-              "[green]Downloaded '#{download.filename}' successfully.[/]")
-          else
-            format.display_line("[red]Download failed (3 attempts).[/]")
-          end
-          prompt(data, results)
+          @page += 1
+          part = partition(page_results, 0, @opts[:size])
+      else
+        part = partition(page_results, @marker + @opts[:size], @opts[:size])
+      end
+      screen(page_results, part)
+    end
+
+    def reverse_paginate(page_results, screen_items)
+      if @marker < 1
+        if @page == 1
+          @format.display_line("[red]Already at page one.[/]")
+          prompt(page_results, screen_items)
+        else # @page > 1
+          @format.display_line("[yellow]Loading results...[/]")
+          # TODO Bug: This fails with --size 100
+          # TODO Bug: reverse paginate sometimes only returns p1 cache
+          page_results = @search.cached(@page - 1)
+          @page -= 1
+          part = partition(page_results, PSIZE - @opts[:size], @opts[:size])
+          screen(page_results, part)
         end
       else
-        format.display_line("[red]Unrecognized option.[/]")
-        prompt(data, results)
+        part = partition(page_results, @marker - @opts[:size], @opts[:size])
+        screen(page_results, part)
+      end
+    end
+
+    def retrieve(choice, page_results, screen_items)
+      /(\d+)(\s*\|(.*))*/.match(choice) do |str|
+        num = str[1].to_i - 1
+        download = Downloader.new(page_results[num].link, @opts[:outdir])
+        download.save
+        unless download.failed?
+          @format.display_line(
+            "[green]Downloaded '#{download.filename}' successfully.[/]")
+        else
+          @format.display_line("[red]Download failed (3 attempts).[/]")
+        end
+        prompt(page_results, screen_items)
       end
     end
   end

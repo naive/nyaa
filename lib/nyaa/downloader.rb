@@ -1,12 +1,12 @@
 # -*- encoding : utf-8 -*-
 module Nyaa
-  class Download
+  class Downloader
     attr_accessor :target, :destination, :retries
     attr_accessor :response, :filename
 
     def initialize(url, path, retries = 3)
       self.target      = url
-      self.destination = sane_path(path)
+      self.destination = sane_dir(path)
       self.retries     = retries
       self.response    = request
       self.filename    = name
@@ -14,7 +14,6 @@ module Nyaa
       @fail = nil
     end
 
-    # HACK Fix all of this, no need for initialization
     def save
       filename = name
       unless @fail
@@ -53,10 +52,9 @@ module Nyaa
         filename = name_from_disposition
       end
 
-      # If we can't determine the remote filename, create one.
       unless filename
-        file = Tempfile.new(['nyaa', '.torrent'], self.destination)
-        filename = File.basename(file)
+        # Uses a 10-digit padded random number
+        filename = "nyaa-#{'%010d' % rand(10 ** 10)}.torrent"
       end
 
       filename
@@ -80,15 +78,9 @@ module Nyaa
       end
     end
 
-    def sane_path(path)
-      if path.nil?
-        path = File.expand_path('~')
-      else
-        newpath = File.expand_path(path)
-        unless File.directory?(newpath) && File.writable?(newpath)
-          path = '/tmp'
-        end
-      end
+    def sane_dir(path)
+      path = Dir.pwd if path.nil? || !File.writable?(path)
+      FileUtils.mkdir_p path unless File.directory?(path)
       path
     end
   end

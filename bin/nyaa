@@ -44,7 +44,6 @@ opts[:query] = ARGV.join(' ')
 
 begin
   nyaa = Nyaa::Browser.new(opts)
-  nyaa.start
 rescue Interrupt
   puts "\nInterrupt received. Exiting."
   exit
