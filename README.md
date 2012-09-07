@@ -5,6 +5,8 @@ Nyaa is a CLI to Nyaa.eu. You can browse, search, and download. Nifty.
 ## Features
 
    * Dev
+     * Interface: Browsing cached pages (experimental)
+     * Search: Add page caching
      * Interface: Add status colors (aplus, trusted, remake, etc.)
    * 0.3.0
      * Remove curl dependency
@@ -20,7 +22,7 @@ Nyaa is a CLI to Nyaa.eu. You can browse, search, and download. Nifty.
 
     gem install nyaa
 
-## Usage
+## Browser Usage
 
 To start browsing immediately, simply run `nyaa`. The default category is english anime.
 
