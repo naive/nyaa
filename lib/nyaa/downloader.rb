@@ -9,16 +9,15 @@ module Nyaa
       self.destination = sane_dir(path)
       self.retries     = retries
       self.response    = request
-      self.filename    = name
+      self.filename    = name_from_disposition
 
       @fail = nil
     end
 
     def save
-      filename = name
       unless @fail
-        File.open("#{self.destination}/#{filename}", 'w') do
-          |f| f.write(self.response.body)
+        File.open("#{self.destination}/#{filename}", 'w') do |f|
+          f.write(self.response.body)
         end
       end
     end
@@ -44,35 +43,14 @@ module Nyaa
       response
     end
 
-    def name
-      re = /\.torrent$/
-      if re.match(self.target)
-        filename = name_from_url
-      else
-        filename = name_from_disposition
-      end
-
-      unless filename
-        # Uses a 10-digit padded random number
-        filename = "nyaa-#{'%010d' % rand(10 ** 10)}.torrent"
-      end
-
-      filename
-    end
-
-    def name_from_url
-      re = /\.torrent$/
-      filename = re.match(self.target).to_s.gsub(/.+\//, '')
-      filename
-    end
-
+    # Filename from Content Disposition Header Field
+    # http://www.ietf.org/rfc/rfc2183.txt
     def name_from_disposition
       disp = self.response.headers[:content_disposition]
       disp_filename = disp.split(/;\s+/).select { |v| v =~ /filename\s*=/ }[0]
       re = /([""'])(?:(?=(\\?))\2.)*?\1/
       if re.match(disp_filename)
         filename = re.match(disp_filename).to_s.gsub(/\A['"]+|['"]+\Z/, "")
-        filename
       else
         nil
       end

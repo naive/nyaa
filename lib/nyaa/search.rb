@@ -43,18 +43,17 @@ module Nyaa
 
     def cached(page)
       cachefile = "#{self.cachedir}/cache_#{self.runid}_p#{page}"
+      p cachefile
       return nil unless File.exists?(cachefile)
 
       File.open(cachefile, 'rb') do |file|
         begin
           results = Marshal.load(file)
         rescue => e
-          # TODO Add error logging
-          puts "Failed to load: #{cachefile}"
+          puts "ERROR: Failed to load #{cachefile}"
           puts "#{e.backtrace}: #{e.message} (#{e.class})"
         end
       end
-      "Successfully loaded p#{page}"
       results
     end
 
@@ -70,12 +69,11 @@ module Nyaa
         begin
           Marshal.dump(results, file)
         rescue => e
-          puts "Failed to dump: #{cachefile}"
+          puts "ERROR: Failed to dump #{cachefile}"
           puts "#{e.backtrace}: #{e.message} (#{e.class})"
         ensure
           file.close
         end
-        puts "Dumped p#{page} successfully."
       end
     end
 
@@ -89,10 +87,8 @@ module Nyaa
     end
 
     def fetch(page)
-      url = "#{BASE_URL}"
-      url << "&offset=#{page}"
-      url << "&cats=#{self.category}"
-      url << "&filter=#{self.filter}"
+      url = "#{BASE_URL}&offset=#{page}"
+      url << "&cats=#{self.category}&filter=#{self.filter}"
       url << "&term=#{self.query}" unless self.query.empty?
       open(url).read
     end

@@ -29,14 +29,10 @@ module Nyaa
       if match
         raw_size = match[1].to_f
         case match[2].strip
-          when /gib/i then
-            raw_size * 1000000000
-          when /mib/i then
-            raw_size * 1000000
-          when /kib/i then
-            raw_size * 1000
-          else
-            nil
+        when /gib/i then raw_size * 1000000000
+        when /mib/i then raw_size * 1000000
+        when /kib/i then raw_size * 1000
+        else nil
         end
       else
         nil
@@ -45,16 +41,11 @@ module Nyaa
 
     def state(value)
       case value
-      when 'trusted tlistrow'
-        status = 'Trusted'
-      when 'remake tlistrow'
-        status = 'Remake'
-      when 'aplus tlistrow'
-        status = 'A+'
-      when 'tlistrow'
-        status = 'Normal'
-      else
-        status = 'Normal'
+      when 'trusted tlistrow' then status = 'Trusted'
+      when 'remake tlistrow'  then status = 'Remake'
+      when 'aplus tlistrow'   then status = 'A+'
+      when 'tlistrow'         then status = 'Normal'
+      else status = 'Normal'
       end
       status
     end

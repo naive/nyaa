@@ -13,7 +13,7 @@ module Nyaa
 
     def start
       @search = Search.new(@opts[:query], @opts[:category], @opts[:filter])
-      page_results = @search.more.get_results # Retrieve first page of results
+      page_results = @search.more.get_results
       @page += 1
       part = partition(page_results, 0, @opts[:size])
       screen(page_results, part)
@@ -65,8 +65,6 @@ module Nyaa
       @format.display_line("\n\t[yellow]Displaying results "\
                      "#{start_count} through #{end_count} of #{PSIZE} "\
                      "(Page ##{@page})\n")
-      #@format.display_line("\n\t[yellow]Displaying results "\
-      #               "#{start_count} through #{end_count} of #{@search.count}")
     end
 
     def screen(page_results, screen_items)
@@ -102,7 +100,6 @@ module Nyaa
 
       case
       when choice[0] == 'q' then @search.purge && exit
-        prompt(page_results, screen_items)
       when choice[0] == 'n' then paginate(page_results)
       when choice[0] == 'p' then reverse_paginate(page_results, screen_items)
       when choice[0].match(/\d/) then retrieve(choice, page_results, screen_items)
@@ -111,6 +108,7 @@ module Nyaa
                              "represents its status:[/]")
         @format.display_line("[blue]A+[/], [green]Trusted[/], "\
                              "[yellow]Normal[/], or [red]Remake[/]")
+        prompt(page_results, screen_items)
       else
         @format.display_line("[red]Unrecognized option.[/]")
         prompt(page_results, screen_items)
@@ -125,8 +123,8 @@ module Nyaa
         else # @page < @search.offset
           page_results = @search.cached(@page + 1)
         end
-          @page += 1
-          part = partition(page_results, 0, @opts[:size])
+        @page += 1
+        part = partition(page_results, 0, @opts[:size])
       else
         part = partition(page_results, @marker + @opts[:size], @opts[:size])
       end
