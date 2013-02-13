@@ -13,14 +13,8 @@ Gem::Specification.new do |s|
 
   s.files        = `git ls-files`.split("\n")
   s.executables  = s.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
-  s.test_files   = s.files.grep(%r{^(test|spec|features)/})
   s.require_path = ['lib']
 
-  s.add_development_dependency 'rake'
-  s.add_development_dependency 'minitest'
-  s.add_development_dependency 'webmock'
-  s.add_development_dependency 'vcr'
-  s.add_runtime_dependency 'trollop', '~> 2.0'
   s.add_runtime_dependency 'formatador', '~> 0.2.3'
   s.add_runtime_dependency 'nokogiri', '~> 1.5.5'
   s.add_runtime_dependency 'rest-client', '~> 1.6.7'
