@@ -4,23 +4,21 @@ Nyaa is a CLI to Nyaa.eu. You can browse, search, and download. Nifty.
 
 ## Features
 
-   * Dev
-     * Interface: Browsing cached pages (experimental)
-     * Search: Add page caching
-     * Interface: Add status colors (aplus, trusted, remake, etc.)
-   * 0.3.0
-     * Remove curl dependency
-     * Add help command
-     * Add/Fix status attribute
-   * 0.1.0
-     * Download with curl
-     * Browsing with pagination
      * Search by category, filter, page, and query
-     * Initial release
+     * Browsing with pagination
+     * Caches pages for performance (experimental)
+     * Nyaa status aware: (aplus, trusted, remake, etc.)
+     * Batch mode for scripts
 
 ## Installation
 
+Stable release:
+
     gem install nyaa
+
+Development release:
+
+    git clone git://github.com/mistofvongola/nyaa.git
 
 ## Browser Usage
 
