@@ -4,11 +4,11 @@ Nyaa is a CLI to Nyaa.eu. You can browse, search, and download. Nifty.
 
 ## Features
 
-     * Search by category, filter, page, and query
-     * Browsing with pagination
-     * Caches pages for performance (experimental)
-     * Nyaa status aware: (aplus, trusted, remake, etc.)
-     * Batch mode for scripts
+* Search by category, filter, page, and query
+* Browsing with pagination
+* Caches pages for performance (experimental)
+* Nyaa status aware: (aplus, trusted, remake, etc.)
+* Batch mode for scripts
 
 ## Installation
 
