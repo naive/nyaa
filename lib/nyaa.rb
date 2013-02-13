@@ -1,11 +1,11 @@
 # -*- encoding : utf-8 -*-
 $:.unshift File.dirname(__FILE__) # For use/testing when no gem is installed
+
 # stdlib
 require 'open-uri'
 
 # third party
 begin
-  require 'trollop'
   require 'nokogiri'
   require 'rest_client'
   require 'formatador'
@@ -15,6 +15,7 @@ end
 
 # internal api
 require 'nyaa/version'
+require 'nyaa/cli'
 require 'nyaa/constants'
 require 'nyaa/torrent'
 require 'nyaa/search'

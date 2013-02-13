@@ -1,46 +1,22 @@
 #!/usr/bin/env ruby
 
-# For use/testing when no gem is installed
-require './lib/nyaa'
+require 'rubygems' # for ruby 1.8
+require './lib/nyaa' # for testing
 
-opts = Trollop::options do
-  version "nyaa v#{Nyaa::VERSION} (c) 2012 David Palma http://github.com/mistofvongola"
-  banner <<-EOM
-Nyaa is a CLI for NyaaTorrents.
+opts = Nyaa::CLI.parse(ARGV)
 
-Usage:
-    nyaa [options] "my search"
-
-Categories:
-  anime_all, anime_raw, anime_english, anime_nonenglish, anime_music_video
-  books_all, books_raw, books_english, books_nonenglish
-  audio_all, audio_lossless, audio_lossy
-  pictures_all, pictures_photos, pictures_graphics,
-  live_all, live_raw, live_english, live_nonenglish, live_promo
-  software_all, software_apps, software_games
-
-Filters:
-  show_all, filter_remakes, trusted_only, aplus_only
-
-Options:
-  EOM
-  opt :size, "Browser mode: Show <i> results at a time. Must be between 1 and 100.", :type => :int, :default => 4
-  opt :category, "Select a category to search in. See below for valid options.", :default => 'anime_english'
-  opt :filter, "Select a filter for your search. See below for valid options.", :default => 'show_all'
-  opt :outdir, "Select the download directory.", :default => File.expand_path('~')
-  opt :script, "Enable scripting mode. NOT IMPLEMENTED YET."
-  opt :version, "Print the version and exit."
-  opt :help, "Show this information and exit."
+if opts[:batch]
+  # Batch mode
+  # TODO: This needs a proper implementation
+  nyaa = Nyaa::Search.new(opts[:query], opts[:category], opts[:filter])
+  results = nyaa.more.get_results
+  results.each do |r|
+    puts "o #{r.name}"
+    puts "#{r.link}"
+    puts
+  end
+  exit
 end
-
-unless Nyaa::CATS.has_key?(opts[:category].to_sym)
-  Trollop::die :category, "is not a valid category"
-end
-unless Nyaa::FILS.has_key?(opts[:filter].to_sym)
-  Trollop::die :filter, "is not a valid filter"
-end
-
-opts[:query] = ARGV.join(' ')
 
 begin
   nyaa = Nyaa::Browser.new(opts)
