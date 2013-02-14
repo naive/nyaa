@@ -30,8 +30,12 @@ module Nyaa
           @config[:size] = size
                end
 
-        opt.on('-b', '--batch', 'Batch mode for scripting') do |b|
-          @config[:batch] = b
+        opt.on('-b', '--batch', 'Batch mode for scripting') do |batch|
+          @config[:batch] = batch
+        end
+
+        opt.on('-p', '--pre-release', 'Use the new curses UI (experimental)') do |curses|
+          @config[:curses] = curses
         end
 
         opt.on('-v', '--version', 'Print version info') do

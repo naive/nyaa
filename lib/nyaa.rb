@@ -6,6 +6,7 @@ require 'open-uri'
 
 # third party
 begin
+  require 'curses'
   require 'nokogiri'
   require 'rest_client'
   require 'formatador'
@@ -21,5 +22,6 @@ require 'nyaa/torrent'
 require 'nyaa/search'
 
 # internal tools
-require 'nyaa/browser'
+require 'nyaa/browser' # old ui
+require 'nyaa/ui' # new ui
 require 'nyaa/downloader'
