@@ -3,41 +3,66 @@
 require 'rubygems' # for ruby 1.8
 require './lib/nyaa' # for testing
 
-opts = Nyaa::CLI.parse(ARGV)
-close = false
+include Curses
+
+@opts = Nyaa::CLI.parse(ARGV)
+
+def batch_mode
+    nyaa = Nyaa::Search.new(@opts[:query], @opts[:category], @opts[:filter])
+    results = nyaa.more.get_results
+    results.each do |r|
+      puts "o #{r.name}"
+      puts "#{r.link}"
+      puts
+    end
+    exit
+end
+
+def browser_mode
+  begin
+    nyaa = Nyaa::Browser.new(@opts)
+  rescue Interrupt
+    puts "\nInterrupt received. Exiting."
+    exit
+  end
+end
+
+def curses_mode
+  begin
+    yield
+  ensure
+    nocbreak
+    close_screen
+  end
+end
 
 # Batch mode
-# TODO: This needs a proper implementation
-if opts[:batch]
-  nyaa = Nyaa::Search.new(opts[:query], opts[:category], opts[:filter])
-  results = nyaa.more.get_results
-  results.each do |r|
-    puts "o #{r.name}"
-    puts "#{r.link}"
-    puts
-  end
-  exit
+if @opts[:batch]
+  batch_mode
 end
 
-begin
-  if opts[:curses]
-    nyaa = Nyaa::UI.new(opts)
-    until done do
+if @opts[:curses] # use new curses interface
+  nyaa = Nyaa::UI.new(@opts)
+  curses_mode do
+    loop do
       nyaa.header
+      nyaa.content
       nyaa.footer
-      nyaa.render
 
-      key = nyaa.read
-      if key == 'q'
-        close = true
+      case getch
+      when Curses::Key::UP   then nyaa.move(0,-1)
+      when Curses::Key::DOWN then nyaa.move(0,1)
+      when '?' then flash
+      when 'g' then flash
+      when 'i' then flash
+      when 'n' then flash
+      when 'p' then flash
+      when 'q' then break
       end
     end
-
-    nyaa.close
-  else
-    nyaa = Nyaa::Browser.new(opts)
   end
-rescue Interrupt
-  puts "\nInterrupt received. Exiting."
-  exit
+else # use old interface
+  browser_mode
 end
+
+exit
