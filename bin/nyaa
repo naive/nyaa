@@ -47,17 +47,18 @@ if @opts[:curses] # use new curses interface
   curses_mode do
     loop do
       nyaa.header
-      nyaa.content
+      nyaa.status("*testing* cursor: #{cursor}")
       nyaa.footer
+      nyaa.menu(cursor)
 
       case getch
-      when Curses::Key::UP   then nyaa.move(0,-1)
-      when Curses::Key::DOWN then nyaa.move(0,1)
-      when '?' then flash
-      when 'g' then flash
-      when 'i' then flash
-      when 'n' then flash
-      when 'p' then flash
+      when Key::UP   then cursor = cursor == 1 ? nyaa.menusize : cursor-1
+      when Key::DOWN then cursor = cursor == nyaa.menusize ? 1 : cursor+1
+      when '?' then nyaa.status('help not implemented!', :failure)
+      when 'g' then nyaa.get(cursor) && nyaa.status
+      when 'i' then nyaa.open(cursor) && nyaa.status
+      when 'n' then nyaa.status('next not implemented!', :failure)
+      when 'p' then nyaa.status('prev not implemented!', :failure)
       when 'q' then break
       end
     end
