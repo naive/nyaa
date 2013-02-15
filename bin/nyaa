@@ -6,10 +6,10 @@ require './lib/nyaa' # for testing
 include Curses
 
 @opts = Nyaa::CLI.parse(ARGV)
+@nyaa = Nyaa::Search.new(@opts[:query], @opts[:category], @opts[:filter])
 
 def batch_mode
-    nyaa = Nyaa::Search.new(@opts[:query], @opts[:category], @opts[:filter])
-    results = nyaa.more.get_results
+    results = @nyaa.more.get_results
     results.each do |r|
       puts "o #{r.name}"
       puts "#{r.link}"
@@ -20,7 +20,7 @@ end
 
 def browser_mode
   begin
-    nyaa = Nyaa::Browser.new(@opts)
+    nyaa = Nyaa::Browser.new(@opts, @nyaa)
   rescue Interrupt
     puts "\nInterrupt received. Exiting."
     exit
@@ -42,7 +42,8 @@ if @opts[:batch]
 end
 
 if @opts[:curses] # use new curses interface
-  nyaa = Nyaa::UI.new(@opts)
+  nyaa = Nyaa::UI.new(@opts, @nyaa)
+  cursor = 1
   curses_mode do
     loop do
       nyaa.header

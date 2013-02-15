@@ -1,18 +1,19 @@
 # -*- encoding : utf-8 -*-
 module Nyaa
   class Browser
-    def initialize(opts)
+    def initialize(opts, search)
       @opts        = opts
       @opts[:size] = PSIZE if opts[:size] > PSIZE
       @opts[:size] = 1 if opts[:size] <= 1
       @marker      = 0
       @format      = Formatador.new
       @page        = 0 # Current browser page
+      @search      = search
       start
     end
 
     def start
-      @search = Search.new(@opts[:query], @opts[:category], @opts[:filter])
+      #@search = Search.new(@opts[:query], @opts[:category], @opts[:filter])
       page_results = @search.more.get_results
       @page += 1
       part = partition(page_results, 0, @opts[:size])
