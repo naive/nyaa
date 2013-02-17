@@ -1,7 +1,10 @@
 #!/usr/bin/env ruby
 
+$:.unshift File.join(File.dirname(__FILE__),'..','lib')
+
 require 'nyaa'
 include Curses
+
 
 @opts = Nyaa::CLI.parse(ARGV)
 @search = Nyaa::Search.new(@opts[:query], @opts[:category], @opts[:filter])
