@@ -54,10 +54,10 @@ if @opts[:curses] # use new curses interface
       refresh
 
       case getch
-      when Key::UP   then cursor = cursor == 1 ? nyaa.menusize : cursor-1
-      when Key::DOWN then cursor = cursor == nyaa.menusize ? 1 : cursor+1
-      when 'k' then cursor = cursor == 1 ? nyaa.menusize : cursor-1
-      when 'j' then cursor = cursor == nyaa.menusize ? 1 : cursor+1
+      when Key::UP   then cursor = nyaa.move(cursor, -1)
+      when Key::DOWN then cursor = nyaa.move(cursor, 1)
+      when 'k' then cursor = nyaa.move(cursor, -1)
+      when 'j' then cursor = nyaa.move(cursor, 1)
       when '?' then nyaa.status('help not implemented!', :failure)
       when 'g' then nyaa.get(cursor) && nyaa.status
       when 'i' then nyaa.open(cursor) && nyaa.status

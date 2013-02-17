@@ -120,12 +120,16 @@ module Nyaa
       end
     end
 
-    # TODO: Multi select
-    def select
+    # TODO: Pop up help window
+    def help
     end
 
-      # TODO: Pop up help window
-    def help
+    def move(cursor, increment)
+      if increment < 0
+        cursor == 1 ? menusize : cursor + increment
+      else # non-negative
+        cursor == menusize ? 1 : cursor + increment
+      end
     end
 
     def get(choice)
