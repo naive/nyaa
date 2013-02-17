@@ -24,13 +24,18 @@ Development release:
 
 ## Browser Usage
 
-To start browsing immediately, simply run `nyaa`. The default category is english anime.
+To browse, simply run `nyaa`. The default category is english anime.
 
-Nyaa supports all the aspects of search of the main site. You can search by category and/or filters. Nyaa also shows a summary of seeders, leechers, total filesize, and number of downloads. To download an item, highlight it, and type `g`.
+![](https://github.com/mistofvongola/nyaa/raw/master/screenshots/v1.0.0_browse.png)
 
-    nyaa -c anime_english -f trusted_only 'sword art online'
+Nyaa supports all the aspects of search of the main site. You can search by category and/or filters. To download an item, highlight it, and type `g`. To open the description page in a browser, type `i`. A sample query:
+
+    nyaa -f trusted_only psycho pass
+![](https://github.com/mistofvongola/nyaa/raw/master/screenshots/v1.0.0_search.png)
 
 For a list of categories and filters, see `nyaa -h`.
+
+![](https://github.com/mistofvongola/nyaa/raw/master/screenshots/v1.0.0_help.png)
 
 ## The old interface
 
