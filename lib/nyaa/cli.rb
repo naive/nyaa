@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Nyaa
   class CLI
     def self.parse(args)
