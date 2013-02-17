@@ -2,11 +2,13 @@
 module Nyaa
 
   class Torrent
-    attr_accessor :name, :info, :link, :filesize, :seeders, :leechers
+    attr_accessor :tid, :name, :info, :link
+    attr_accessor :filesize, :seeders, :leechers
     attr_accessor :category, :status, :downloads, :comments
     attr_accessor :health, :bytes
 
     def initialize (row = nil)
+      self.tid      = row.css('td.tlistname').at('a')['href'][/tid=\d+/].gsub(/\D/,'')
       self.name     = row.css('td.tlistname').at('a').text.strip
       self.info     = row.css('td.tlistname').at('a')['href']
       self.link     = row.css('td.tlistdownload').at('a')['href']
@@ -50,6 +52,14 @@ module Nyaa
       end
       status
     end
+
+    def to_hash
+      hash = {}
+      instance_variables.each do |var|
+        hash[var.to_s.delete("@")] = instance_variable_get(var)
+      end
+      hash
+    end 
 
   end
 end
