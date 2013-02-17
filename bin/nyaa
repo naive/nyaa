@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'nyaa'
+require nyaa
 include Curses
 
 @opts = Nyaa::CLI.parse(ARGV)
@@ -61,10 +61,10 @@ else
       when 'k' then cursor = nyaa.move(cursor, -1)
       when 'j' then cursor = nyaa.move(cursor, 1)
       when '?' then nyaa.status('help not implemented!', :failure)
-      when 'g' then nyaa.get(cursor) && nyaa.status
-      when 'i' then nyaa.open(cursor) && nyaa.status
-      when 'n' then nyaa.next_page && nyaa.status
-      when 'p' then nyaa.prev_page && nyaa.status
+      when 'g' then nyaa.get(cursor)
+      when 'i' then nyaa.open(cursor)
+      when 'n' then nyaa.next_page
+      when 'p' then nyaa.prev_page
       when 'q' then @search.purge && break
       #when Key::RESIZE then nyaa.status("Window size changed!", :failure)
       end

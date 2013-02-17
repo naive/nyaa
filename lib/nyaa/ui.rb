@@ -69,7 +69,7 @@ module Nyaa
     end
 
     def status(text = nil, type = nil)
-      @status[:text] = text.nil? ? 'Ready.' : text
+      @status[:text] = text if text
       @status[:type] = type
 
       case @status[:type]
@@ -82,6 +82,7 @@ module Nyaa
       attrset(color_pair(profile))
       setpos(lines-3,0)
       addstr(sprintf "%-#{cols}s", status_text)
+      refresh
     end
 
     def menu(highlight)
@@ -152,9 +153,9 @@ module Nyaa
       download = Downloader.new(torrent.link, @config[:output])
       download.save
       unless download.failed?
-        status("Downloaded successful.", :success)
+        status("Downloaded successful: #{torrent.tid}", :success)
       else
-        status('Download failed (3 attempts).', :failure)
+        status("Download failed (3 attempts): #{torrent.tid}", :failure)
       end
     end
 
@@ -172,6 +173,7 @@ module Nyaa
     end
 
     def next_page
+      status("Ready.")
       unless @page + 1 > @num_pages
         @page += 1
       end
