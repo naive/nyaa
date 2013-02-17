@@ -39,7 +39,9 @@ if @opts[:batch]
   batch_mode
 end
 
-if @opts[:curses] # use new curses interface
+if @opts[:classic] # use old interface
+  browser_mode
+else
   nyaa = Nyaa::UI.new(@opts, @search)
   cursor = 1
 
@@ -68,8 +70,6 @@ if @opts[:curses] # use new curses interface
       end
     end
   end
-else # use old interface
-  browser_mode
 end
 
 exit

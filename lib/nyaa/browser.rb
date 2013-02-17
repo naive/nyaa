@@ -3,6 +3,7 @@ module Nyaa
   class Browser
     def initialize(opts, search)
       @opts        = opts
+      @opts[:size] = 4 if opts[:size].nil?
       @opts[:size] = PSIZE if opts[:size] > PSIZE
       @opts[:size] = 1 if opts[:size] <= 1
       @marker      = 0

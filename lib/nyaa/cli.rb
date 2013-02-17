@@ -24,19 +24,12 @@ module Nyaa
           @config[:output] = output
         end
 
-        @config[:size] = 4
-        # TODO: results size scales to terminal size, KISS
-        opt.on('-s', '--size=SIZE', OptionParser::DecimalInteger,
-               'Show SIZE results at a time (default: 4)') do |size|
-          @config[:size] = size
-        end
-
-        opt.on('-b', '--batch', 'Batch mode for scripting') do |batch|
+        opt.on('-b', '--batch', 'Batch mode for scripting (first page only)') do |batch|
           @config[:batch] = batch
         end
 
-        opt.on('-p', '--pre-release', 'Use the new curses UI (experimental)') do |curses|
-          @config[:curses] = curses
+        opt.on('-t', '--classic', 'Use the old interface (deprecated)') do |classic|
+          @config[:classic] = classic
         end
 
         opt.on('-v', '--version', 'Print version info') do
@@ -46,7 +39,7 @@ module Nyaa
           exit
         end
 
-        opt.on_tail '-h', '--help', 'Show usage information' do
+        opt.on_tail '-h', '--help', 'Show usage info' do
           puts opts
           puts %s{
 Categories:
