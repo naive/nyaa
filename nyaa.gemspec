@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.description = 'Browse and download from NyaaTorrents from the command-line. Supports categories and filters.'
 
   s.authors  = ['David Palma']
-  s.email    = 'requiem.der.seele@gmail.com'
+  s.email    = 'david@davidpalma.me'
 
   s.files        = `git ls-files`.split("\n")
   s.executables  = s.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
