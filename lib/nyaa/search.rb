@@ -14,7 +14,7 @@ module Nyaa
       self.count    = 1.0/0.0
 
       self.runid    = Time.new.to_i
-      self.cachedir = File.expand_path('~/.booru/cache')
+      self.cachedir = File.expand_path('~/.nyaa/cache')
       FileUtils.mkdir_p(cachedir) unless File.directory?(cachedir)
     end
 
@@ -77,6 +77,22 @@ module Nyaa
       end
     end
 
+    def dump_json(page, results)
+      cachefile = "cache_#{self.runid}_p#{page}.json"
+      File.open("#{self.cachedir}/#{cachefile}", 'w') do |file|
+        begin
+          batch = []
+          results.each { |r| batch << r.to_hash }
+          file.write(batch.to_json)
+        rescue => e
+          puts "ERROR: Failed to dump #{cachefile}"
+          puts "#{e.backtrace}: #{e.message} (#{e.class})"
+        ensure
+          file.close
+        end
+      end
+    end
+
     def extract(page)
       raw = fetch(page)
       doc = Nokogiri::HTML(raw)
@@ -84,6 +100,7 @@ module Nyaa
       rows = doc.css('div#main div.content table.tlist tr.tlistrow')
       rows.each { |row| self.results << Torrent.new(row) }
       dump(page, self.results)
+      #dump_json(page, self.results)
     end
 
     def fetch(page)
