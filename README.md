@@ -4,6 +4,7 @@ Nyaa is a CLI to Nyaa.eu. You can browse, search, and download. Nifty.
 
 ## Features
 
+* Ncurses interface
 * Search by category, filter, page, and query
 * Browsing with pagination
 * Download it or open a browser window from the interface
@@ -25,17 +26,17 @@ Development release:
 
 To start browsing immediately, simply run `nyaa`. The default category is english anime.
 
-![](https://github.com/mistofvongola/nyaa/raw/master/screenshots/screenshot_1.png)
+Nyaa supports all the aspects of search of the main site. You can search by category and/or filters. Nyaa also shows a summary of seeders, leechers, total filesize, and number of downloads. To download an item, highlight it, and type `g`.
 
-Nyaa supports all the aspects of search of the main site. You can search by category and/or filters. Nyaa also shows a summary of seeders, leechers, total filesize, and number of downloads. To download an item, simply enter the number of the result.
-
-    nyaa -c anime_english -f trusted_only 'guilty crown'
-
-![](https://github.com/mistofvongola/nyaa/raw/master/screenshots/screenshot_2.png)
+    nyaa -c anime_english -f trusted_only 'sword art online'
 
 For a list of categories and filters, see `nyaa -h`.
 
-![](https://github.com/mistofvongola/nyaa/raw/master/screenshots/screenshot_3.png)
+## The old interface
+
+The old nyaa interface is deprecated, but is still included. You can use the old interface using the `--classic` option.
+
+![](https://github.com/mistofvongola/nyaa/raw/master/screenshots/screenshot_1.png)
 
 ## Contributing
 1. Fork it
