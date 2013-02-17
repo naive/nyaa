@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-#require './lib/nyaa' # for testing
+require 'nyaa'
 include Curses
 
 @opts = Nyaa::CLI.parse(ARGV)
