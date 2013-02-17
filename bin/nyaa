@@ -1,15 +1,13 @@
 #!/usr/bin/env ruby
 
-require 'rubygems' # for ruby 1.8
 require './lib/nyaa' # for testing
-
 include Curses
 
 @opts = Nyaa::CLI.parse(ARGV)
-@nyaa = Nyaa::Search.new(@opts[:query], @opts[:category], @opts[:filter])
+@search = Nyaa::Search.new(@opts[:query], @opts[:category], @opts[:filter])
 
 def batch_mode
-    results = @nyaa.more.get_results
+    results = @search.more.get_results
     results.each do |r|
       puts "o #{r.name}"
       puts "#{r.link}"
@@ -20,7 +18,7 @@ end
 
 def browser_mode
   begin
-    nyaa = Nyaa::Browser.new(@opts, @nyaa)
+    nyaa = Nyaa::Browser.new(@opts, @search)
   rescue Interrupt
     puts "\nInterrupt received. Exiting."
     exit
@@ -42,24 +40,30 @@ if @opts[:batch]
 end
 
 if @opts[:curses] # use new curses interface
-  nyaa = Nyaa::UI.new(@opts, @nyaa)
+  nyaa = Nyaa::UI.new(@opts, @search)
   cursor = 1
+
   curses_mode do
+    #TODO: Gracefully handle window resizing
+    #trap('SIGWINCH', nyaa.resize_handler(cursor))
     loop do
       nyaa.header
-      nyaa.status("*testing* cursor: #{cursor}")
+      nyaa.status
       nyaa.footer
       nyaa.menu(cursor)
+      refresh
 
       case getch
       when Key::UP   then cursor = cursor == 1 ? nyaa.menusize : cursor-1
       when Key::DOWN then cursor = cursor == nyaa.menusize ? 1 : cursor+1
+      when 'k' then cursor = cursor == 1 ? nyaa.menusize : cursor-1
+      when 'j' then cursor = cursor == nyaa.menusize ? 1 : cursor+1
       when '?' then nyaa.status('help not implemented!', :failure)
       when 'g' then nyaa.get(cursor) && nyaa.status
       when 'i' then nyaa.open(cursor) && nyaa.status
-      when 'n' then nyaa.status('next not implemented!', :failure)
-      when 'p' then nyaa.status('prev not implemented!', :failure)
-      when 'q' then break
+      when 'n' then nyaa.next && nyaa.status
+      when 'p' then nyaa.prev && nyaa.status
+      when 'q' then @search.purge && break
       end
     end
   end
