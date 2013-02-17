@@ -3,10 +3,11 @@ $:.unshift File.dirname(__FILE__) # For use/testing when no gem is installed
 
 # stdlib
 require 'open-uri'
+require 'curses'
 
 # third party
 begin
-  require 'curses'
+  require 'rubygems' # for ruby 1.8 compat
   require 'nokogiri'
   require 'rest_client'
   require 'formatador'
