@@ -45,7 +45,7 @@ if @opts[:curses] # use new curses interface
 
   curses_mode do
     #TODO: Gracefully handle window resizing
-    #trap('SIGWINCH', nyaa.resize_handler(cursor))
+    #Signal.trap('SIGWINCH', nyaa.status("Window size changed!", :failure))
     loop do
       nyaa.header
       nyaa.status
@@ -61,9 +61,10 @@ if @opts[:curses] # use new curses interface
       when '?' then nyaa.status('help not implemented!', :failure)
       when 'g' then nyaa.get(cursor) && nyaa.status
       when 'i' then nyaa.open(cursor) && nyaa.status
-      when 'n' then nyaa.next && nyaa.status
-      when 'p' then nyaa.prev && nyaa.status
+      when 'n' then nyaa.next_page && nyaa.status
+      when 'p' then nyaa.prev_page && nyaa.status
       when 'q' then @search.purge && break
+      #when Key::RESIZE then nyaa.status("Window size changed!", :failure)
       end
     end
   end

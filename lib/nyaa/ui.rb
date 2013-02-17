@@ -6,7 +6,7 @@ module Nyaa
 
     def initialize (config, search)
       @config = config
-      @status = { :text => '', :type => :default }
+      @status = { :text => 'Ready.', :type => :default }
       setup_curses
 
       # columns
@@ -68,7 +68,7 @@ module Nyaa
     end
 
     def status(text = nil, type = nil)
-      @status[:text] = text if text
+      @status[:text] = text.nil? ? 'Ready.' : text
       @status[:type] = type
 
       case @status[:type]
@@ -77,7 +77,7 @@ module Nyaa
       else profile = 1
       end
 
-      status_text = sprintf " %-28s", @status[:text]
+      status_text = sprintf " Status: %-s", @status[:text]
       attrset(color_pair(profile))
       setpos(lines-3,0)
       addstr(sprintf "%-#{cols}s", status_text)
@@ -125,10 +125,24 @@ module Nyaa
     end
 
     def move(cursor, increment)
-      if increment < 0
-        cursor == 1 ? menusize : cursor + increment
-      else # non-negative
-        cursor == menusize ? 1 : cursor + increment
+      if increment < 0 # negative, retreat!
+        if cursor == 1
+          if @offset == 0
+            cursor = 1
+          else
+            prev_page
+            cursor = menusize
+          end
+        else
+          cursor = cursor + increment
+        end
+      else # non-negative, advance!
+        if cursor == menusize
+          next_page
+          cursor = 1
+        else
+          cursor = cursor + increment
+        end
       end
     end
 
@@ -156,7 +170,7 @@ module Nyaa
       status("Opened '#{link}'", :success)
     end
 
-    def next
+    def next_page
       unless @page + 1 > @num_pages
         @page += 1
       end
@@ -166,7 +180,7 @@ module Nyaa
       end
     end
 
-    def prev
+    def prev_page
       unless @page - 1 < 1
         @page += -1
       end

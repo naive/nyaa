@@ -29,7 +29,7 @@ module Nyaa
         opt.on('-s', '--size=SIZE', OptionParser::DecimalInteger,
                'Show SIZE results at a time (default: 4)') do |size|
           @config[:size] = size
-               end
+        end
 
         opt.on('-b', '--batch', 'Batch mode for scripting') do |batch|
           @config[:batch] = batch
