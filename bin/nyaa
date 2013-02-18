@@ -51,7 +51,7 @@ curses_mode do
     when Key::DOWN then cursor = nyaa.move(cursor, 1)
     when 'k' then cursor = nyaa.move(cursor, -1)
     when 'j' then cursor = nyaa.move(cursor, 1)
-    when '?' then nyaa.status('help not implemented!', :failure)
+    when '?' then nyaa.status('See the --help option')
     when 'g' then nyaa.get(cursor)
     when 'i' then nyaa.open(cursor)
     when 'n' then nyaa.next_page
