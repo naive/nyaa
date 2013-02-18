@@ -28,10 +28,6 @@ module Nyaa
           @config[:batch] = batch
         end
 
-        opt.on('-t', '--classic', 'Use the old interface (deprecated)') do |classic|
-          @config[:classic] = classic
-        end
-
         opt.on('-v', '--version', 'Print version info') do
           puts "nyaa #{Nyaa::VERSION}"
           puts "Copyright (c) 2013 David Palma"

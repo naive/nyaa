@@ -19,15 +19,6 @@ def batch_mode
     exit
 end
 
-def browser_mode
-  begin
-    nyaa = Nyaa::Browser.new(@opts, @search)
-  rescue Interrupt
-    puts "\nInterrupt received. Exiting."
-    exit
-  end
-end
-
 def curses_mode
   begin
     yield
@@ -42,35 +33,31 @@ if @opts[:batch]
   batch_mode
 end
 
-if @opts[:classic] # use old interface
-  browser_mode
-else
-  nyaa = Nyaa::UI.new(@opts, @search)
-  cursor = 1
+nyaa = Nyaa::UI.new(@opts, @search)
+cursor = 1
 
-  curses_mode do
-    #TODO: Gracefully handle window resizing
-    #Signal.trap('SIGWINCH', nyaa.status("Window size changed!", :failure))
-    loop do
-      nyaa.header
-      nyaa.status
-      nyaa.footer
-      nyaa.menu(cursor)
-      refresh
+curses_mode do
+  #TODO: Gracefully handle window resizing
+  #Signal.trap('SIGWINCH', nyaa.status("Window size changed!", :failure))
+  loop do
+    nyaa.header
+    nyaa.status
+    nyaa.footer
+    nyaa.menu(cursor)
+    refresh
 
-      case getch
-      when Key::UP   then cursor = nyaa.move(cursor, -1)
-      when Key::DOWN then cursor = nyaa.move(cursor, 1)
-      when 'k' then cursor = nyaa.move(cursor, -1)
-      when 'j' then cursor = nyaa.move(cursor, 1)
-      when '?' then nyaa.status('help not implemented!', :failure)
-      when 'g' then nyaa.get(cursor)
-      when 'i' then nyaa.open(cursor)
-      when 'n' then nyaa.next_page
-      when 'p' then nyaa.prev_page
-      when 'q' then @search.purge && break
-      #when Key::RESIZE then nyaa.status("Window size changed!", :failure)
-      end
+    case getch
+    when Key::UP   then cursor = nyaa.move(cursor, -1)
+    when Key::DOWN then cursor = nyaa.move(cursor, 1)
+    when 'k' then cursor = nyaa.move(cursor, -1)
+    when 'j' then cursor = nyaa.move(cursor, 1)
+    when '?' then nyaa.status('help not implemented!', :failure)
+    when 'g' then nyaa.get(cursor)
+    when 'i' then nyaa.open(cursor)
+    when 'n' then nyaa.next_page
+    when 'p' then nyaa.prev_page
+    when 'q' then @search.purge && break
+    #when Key::RESIZE then nyaa.status("Window size changed!", :failure)
     end
   end
 end
