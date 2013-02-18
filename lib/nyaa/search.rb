@@ -34,13 +34,11 @@ module Nyaa
       self.offset += 1
       if self.results.length < self.count
         extract(self.offset)
-      else
-        self.results = []
-        puts "No more results"
       end
         self
     end
 
+    # TODO: Deprecated function
     def cached(page)
       cachefile = "#{self.cachedir}/cache_#{self.runid}_p#{page}"
       p cachefile
@@ -63,6 +61,7 @@ module Nyaa
 
     private
 
+    # TODO: Deprecated function
     def dump(page, results)
       cachefile = "cache_#{self.runid}_p#{page}"
       File.open("#{self.cachedir}/#{cachefile}", 'wb') do |file|
@@ -99,7 +98,7 @@ module Nyaa
       self.count = doc.css('span.notice').text.match(/\d+/).to_s.to_i
       rows = doc.css('div#main div.content table.tlist tr.tlistrow')
       rows.each { |row| self.results << Torrent.new(row) }
-      dump(page, self.results)
+      #dump(page, self.results)
       #dump_json(page, self.results)
     end
 
