@@ -2,7 +2,6 @@
 module Nyaa
 
     BASE_URL = 'http://www.nyaa.eu/?page=search'
-    PSIZE = 100
 
     CATS = {
       :all_categories    => {
