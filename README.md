@@ -37,12 +37,6 @@ For a list of categories and filters, see `nyaa -h`.
 
 ![](https://github.com/mistofvongola/nyaa/raw/master/screenshots/v1.0.0_help.png)
 
-## The old interface
-
-The old nyaa interface is deprecated, but is still included. You can use the old interface using the `--classic` option.
-
-![](https://github.com/mistofvongola/nyaa/raw/master/screenshots/screenshot_1.png)
-
 ## Contributing
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)
