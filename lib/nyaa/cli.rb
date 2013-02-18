@@ -39,12 +39,13 @@ module Nyaa
           puts opts
           puts %s{
 Categories:
-  anime_all, anime_raw, anime_english, anime_nonenglish, anime_music_video
-  books_all, books_raw, books_english, books_nonenglish
-  live_all, live_raw, live_english, live_nonenglish, live_promo
-  audio_all, audio_lossless, audio_lossy
+  anime_all, anime_raw, anime_english, anime_nonenglish, anime_music_video,
+  books_all, books_raw, books_english, books_nonenglish,
+  live_all, live_raw, live_english, live_nonenglish, live_promo,
+  audio_all, audio_lossless, audio_lossy,
   pictures_all, pictures_photos, pictures_graphics,
-  software_all, software_apps, software_games
+  software_all, software_apps, software_games,
+  all_categories
 
 Filters:
   show_all, filter_remakes, trusted_only, aplus_only}
