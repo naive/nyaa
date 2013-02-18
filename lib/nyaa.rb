@@ -9,8 +9,6 @@ require 'curses'
 begin
   require 'rubygems' # for ruby 1.8 compat
   require 'nokogiri'
-  require 'rest_client'
-  require 'formatador'
 rescue LoadError => e
   puts "LoadError: #{e.message}"
 end
@@ -23,6 +21,5 @@ require 'nyaa/torrent'
 require 'nyaa/search'
 
 # internal tools
-require 'nyaa/browser' # old ui
-require 'nyaa/ui' # new ui
+require 'nyaa/ui'
 require 'nyaa/downloader'

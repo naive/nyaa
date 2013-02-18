@@ -17,7 +17,7 @@ module Nyaa
     def save
       unless @fail
         File.open("#{self.destination}/#{filename}", 'w') do |f|
-          f.write(self.response.body)
+          f.write(self.response.read)
         end
       end
     end
@@ -30,7 +30,7 @@ module Nyaa
 
     def request
       begin
-        response = RestClient.get(self.target)
+        response = open(self.target)
       rescue StandardError => e
         if retries > 0
           retries -= 1
@@ -46,7 +46,7 @@ module Nyaa
     # Filename from Content Disposition Header Field
     # http://www.ietf.org/rfc/rfc2183.txt
     def name_from_disposition
-      disp = self.response.headers[:content_disposition]
+      disp = self.response.meta['content-disposition']
       disp_filename = disp.split(/;\s+/).select { |v| v =~ /filename\s*=/ }[0]
       re = /([""'])(?:(?=(\\?))\2.)*?\1/
       if re.match(disp_filename)

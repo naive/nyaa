@@ -15,7 +15,5 @@ Gem::Specification.new do |s|
   s.executables  = s.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   s.require_path = ['lib']
 
-  s.add_runtime_dependency 'formatador', '~> 0.2.3'
   s.add_runtime_dependency 'nokogiri', '~> 1.5.5'
-  s.add_runtime_dependency 'rest-client', '~> 1.6.7'
 end
