@@ -4,19 +4,22 @@ Nyaa is a command line interface to the nyaa.eu website.
 
 = COMMANDS
 
-↑ or ↓
-    Scroll up (↑) or down (↓) through the list of torrents
+↑ or k
+    Scroll up through the list of torrents
 
-j or k
-    Scroll up (k) or down (j) through the list of torrents
+↓ or j
+    Scroll down through the list of torrents
 
-n or p
-    Jump up (p) or down (n) a page through the list of torrents
+p or PageUp
+    Skip back a page through the list of torrents
+
+n or PageDown
+    Skip forward a page through the list of torrents
 
 i
     Opens the torrent description page in the default web browser.
 
-g
+g or ENTER
     Downloads the torrent into the output directory. This defaults
     to the current directory, but can be changed. See `nyaa --help`.
 

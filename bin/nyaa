@@ -47,15 +47,13 @@ curses_mode do
     refresh
 
     case getch
-    when Key::UP   then cursor = nyaa.move(cursor, -1)
-    when Key::DOWN then cursor = nyaa.move(cursor, 1)
-    when 'k' then cursor = nyaa.move(cursor, -1)
-    when 'j' then cursor = nyaa.move(cursor, 1)
-    when '?' then nyaa.help
-    when 'g' then nyaa.get(cursor)
+    when *[Key::UP,'k']    then cursor = nyaa.move(cursor, -1)
+    when *[Key::DOWN,'j']  then cursor = nyaa.move(cursor, 1)
+    when *[Key::NPAGE,'n'] then nyaa.next_page
+    when *[Key::PPAGE,'p'] then nyaa.prev_page
+    when *[Key::ENTER,'g'] then nyaa.get(cursor)
     when 'i' then nyaa.open(cursor)
-    when 'n' then nyaa.next_page
-    when 'p' then nyaa.prev_page
+    when '?' then nyaa.help
     when 'q' then @search.purge && break
     #when Key::RESIZE then nyaa.status("Window size changed!", :failure)
     end
