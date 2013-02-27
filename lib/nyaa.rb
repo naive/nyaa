@@ -21,5 +21,6 @@ require 'nyaa/torrent'
 require 'nyaa/search'
 
 # internal tools
+require 'nyaa/utils'
 require 'nyaa/ui'
 require 'nyaa/downloader'

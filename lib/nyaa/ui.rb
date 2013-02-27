@@ -5,6 +5,8 @@ module Nyaa
   class UI
     attr_accessor :menusize, :page
 
+    DOC = "#{Nyaa::Utils.gem_libdir}/HELP"
+
     def initialize (config, search)
       @config = config
       @status = { :text => 'Ready.', :type => :default }
@@ -122,8 +124,9 @@ module Nyaa
       end
     end
 
-    # TODO: Pop up help window
     def help
+      system("less #{DOC}")
+      clear
     end
 
     def move(cursor, increment)

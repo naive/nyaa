@@ -1,0 +1,47 @@
+= NYAA
+
+Nyaa is a command line interface to the nyaa.eu website.
+
+= COMMANDS
+
+↑ or ↓
+    Scroll up (↑) or down (↓) through the list of torrents
+
+j or k
+    Scroll up (k) or down (j) through the list of torrents
+
+n or p
+    Jump up (p) or down (n) a page through the list of torrents
+
+i
+    Opens the torrent description page in the default web browser.
+
+g
+    Downloads the torrent into the output directory. This defaults
+    to the current directory, but can be changed. See `nyaa --help`.
+
+q
+    Quits
+
+?
+    Opens this help document
+
+= VIEW
+
+The header shows the current category you're browsing (e.g.
+"Anime >> English-translated Anime") in addition to:
+
+ * "Size" refers to size of the files in the torrent 
+ * "SE" is the number of seeders
+ * "LE" is the number of leechers
+
+In the footer, "view" shows which results are currently being displayed,
+and the total results for your search. "recv" shows the number results
+currently loaded/fetched. If you page through results too fast, you
+might have to wait a second for more results to be fetched. "page" shows
+how many pages of results there are.
+
+You probably also noticed that some torrents are different colors. The 
+colors correspond to the filters on nyaa.eu. For example, trusted torrents
+are green and A+ torrents are blue. These colors depend on your terminal
+color settings, so they might different in your terminal.
