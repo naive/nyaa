@@ -10,7 +10,9 @@ Nyaa is a CLI to Nyaa.eu. You can browse, search, and download. Nifty.
 * Download it or open a browser window from the interface
 * Nyaa status aware: (aplus, trusted, remake, etc.)
 * Batch mode for scripts (first page only atm)
-* Supports unicode characters (requires `libncursesw5-dev` and `ruby1.9`)
+* Supports unicode characters (requires `libncursesw5-dev` and `ruby1.9` or
+  greater)
+* Tested on Ruby 1.8.7-p371, 1.9.3-p327, 2.0.0-p0
 
 ## Installation
 
