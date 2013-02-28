@@ -6,7 +6,7 @@ module Nyaa
 
     def initialize(url, path, retries = 3)
       self.target      = url
-      self.destination = sane_dir(path)
+      self.destination = Nyaa::Utils.safe_path(path)
       self.retries     = retries
       self.response    = request
       self.filename    = name_from_disposition
@@ -56,10 +56,5 @@ module Nyaa
       end
     end
 
-    def sane_dir(path)
-      path = Dir.pwd if path.nil? || !File.writable?(path)
-      FileUtils.mkdir_p path unless File.directory?(path)
-      path
-    end
   end
 end

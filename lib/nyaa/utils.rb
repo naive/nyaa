@@ -1,6 +1,13 @@
 module Nyaa
   module Utils
 
+    def self.safe_path(path)
+      path = Dir.pwd if path.nil? || !File.writable?(path)
+      FileUtils.mkdir_p path unless File.directory?(path)
+      path
+    end
+
+    # Get gem's lib directory
     def self.gem_libdir
       paths = [
         "#{File.dirname(File.expand_path($0))}/../lib/#{Nyaa::NAME}",
