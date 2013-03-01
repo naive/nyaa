@@ -28,16 +28,17 @@ Development release:
 
 To browse, simply run `nyaa`. The default category is english anime.
 
-![](https://github.com/mistofvongola/nyaa/raw/master/screenshots/v1.0.0_browse.png)
+![](http://i.imgur.com/Tzi6zo1.png)
 
 Nyaa supports all the aspects of search of the main site. You can search by category and/or filters. To download an item, highlight it, and type `g`. To open the description page in a browser, type `i`. A sample query:
 
     nyaa -f trusted_only psycho pass
-![](https://github.com/mistofvongola/nyaa/raw/master/screenshots/v1.0.0_search.png)
+
+![](http://i.imgur.com/mhBQHS1.png)
 
 For a list of categories and filters, see `nyaa -h`.
 
-![](https://github.com/mistofvongola/nyaa/raw/master/screenshots/v1.0.0_help.png)
+![](http://i.imgur.com/In44LcD.png)
 
 ## Contributing
 1. Fork it
