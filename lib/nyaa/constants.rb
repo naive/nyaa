@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 module Nyaa
 
-    BASE_URL = 'http://www.nyaa.eu/?page=search'
+    BASE_URL = 'http://www.nyaa.se/?page=search'
 
     CATS = {
       :all_categories    => {
