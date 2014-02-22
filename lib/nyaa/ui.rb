@@ -179,9 +179,9 @@ module Nyaa
       if RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/ then
           system("start #{link}")
       elsif RbConfig::CONFIG['host_os'] =~ /darwin/ then
-          system("open '#{link}'")
+          system("open '#{link}'", [:out, :err]=>'/dev/null')
       elsif RbConfig::CONFIG['host_os'] =~ /linux/ then
-          system("xdg-open '#{link}'")
+          system("xdg-open '#{link}'", [:out, :err]=>'/dev/null')
       end
 
       status("Opened '#{link}'", :success)
