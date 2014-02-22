@@ -1,25 +1,30 @@
 # -*- encoding : utf-8 -*-
+require 'time'
 module Nyaa
 
   class Torrent
     attr_accessor :tid, :name, :info, :link
     attr_accessor :filesize, :seeders, :leechers
-    attr_accessor :category, :status, :downloads, :comments
+    attr_accessor :category, :status, :downloads, :date
     attr_accessor :health, :bytes
 
     def initialize (row = nil)
-      self.tid      = row.css('td.tlistname').at('a')['href'][/tid=\d+/].gsub(/\D/,'')
-      self.name     = row.css('td.tlistname').at('a').text.strip
-      self.info     = row.css('td.tlistname').at('a')['href']
-      self.link     = row.css('td.tlistdownload').at('a')['href']
-      self.filesize = row.css('td.tlistsize').text
-      self.seeders  = row.css('td.tlistsn').text.to_i
-      self.leechers = row.css('td.tlistln').text.to_i
+	  self.tid      = row.at_css("link").text[/tid=\d+/].gsub(/\D/,'')
+      self.name     = row.at_css("title").text;
+      self.info     = row.at_css("guid").text;
+      self.link     = row.at_css("link").text;
+	  
+      row.at_css("description").text.match(/(\d+)[^\d]+(\d+)[^\d]+(\d+)[^\d]+([^-]+)-?([^-]+)?/){
+	  	self.seeders = $1.to_i;
+		self.leechers = $2.to_i;
+		self.filesize = $4.strip;
 
-      self.status    = state(row.values[0])
-      self.category  = row.css('td.tlisticon').at('a')['title']
-      self.downloads = row.css('td.tlistdn').text
-      self.comments  = row.css('td.tlistmn').text
+		self.status = $5 != nil ? $5.strip.downcase : '';
+		self.downloads = $3.to_i;
+	  }
+
+      self.category  = row.at_css("category").text;
+	  self.date = Time.parse(row.at_css("pubDate")).localtime;
     end
 
 
@@ -44,10 +49,10 @@ module Nyaa
 
     def state(value)
       case value
-      when 'trusted tlistrow' then status = 'Trusted'
-      when 'remake tlistrow'  then status = 'Remake'
-      when 'aplus tlistrow'   then status = 'A+'
-      when 'tlistrow'         then status = 'Normal'
+      when 'trusted' then status = 'Trusted'
+      when 'remake'  then status = 'Remake'
+      when 'aplus'   then status = 'A+'
+      when ''        then status = 'Normal'
       else status = 'Normal'
       end
       status

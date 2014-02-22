@@ -21,6 +21,7 @@ module Nyaa
       @commands = {
         '?' => 'help',
         'g' => 'get',
+		's' => 'start',
         'i' => 'info',
         'n' => 'next',
         'p' => 'prev',
@@ -154,24 +155,35 @@ module Nyaa
     def get(choice)
       torrent = @torrents[@offset + choice - 1]
       download = Downloader.new(torrent.link, @config[:output])
-      download.save
+      path = download.save
+
       unless download.failed?
         status("Downloaded successful: #{torrent.tid}", :success)
       else
         status("Download failed (3 attempts): #{torrent.tid}", :failure)
+	return nil;
       end
+
+      return path;
     end
 
+	def start(choice)
+		path = self.get(choice);
+		self.open(path) if path != nil;
+	end
+
     def open(choice)
-      torrent = @torrents[@offset + choice - 1]
-      link = "#{torrent.info}"
+      
+      link = choice.class == Fixnum ? @torrents[@offset + choice - 1].info.to_s : choice;
+
       if RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/ then
           system("start #{link}")
       elsif RbConfig::CONFIG['host_os'] =~ /darwin/ then
-          system("open '#{link}'", [:out, :err]=>'/dev/null')
+          system("open '#{link}'")
       elsif RbConfig::CONFIG['host_os'] =~ /linux/ then
-          system("xdg-open '#{link}'", [:out, :err]=>'/dev/null')
+          system("xdg-open '#{link}'")
       end
+
       status("Opened '#{link}'", :success)
     end
 
