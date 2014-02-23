@@ -36,10 +36,8 @@ module Nyaa
 
     def more
       self.offset += 1
-      if self.results.length < self.count
-        extract(self.offset)
-      end
-        self
+      extract(self.offset)
+      return self
     end
 
     # TODO: Deprecated function
@@ -100,9 +98,9 @@ module Nyaa
       raw = fetch(page)
       doc = Nokogiri::XML(raw)
 	  rows = doc.xpath("//item");
-      self.count = rows.count;
       rows.each { |row| self.results << Torrent.new(row) }
-      #dump(page, self.results)
+      self.count = self.results.count;
+	  #dump(page, self.results)
       #dump_json(page, self.results)
     end
 
