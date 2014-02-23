@@ -215,11 +215,12 @@ module Nyaa
     def harvester
       Thread.new do
 	    last = @torrents.size;
-        until @loading == false
+        
+		loop do
           @torrents = @search.more.results
           @num_torrents = @torrents.size
 
-		  if @torrents.size % 100 != 0 || last - @torrents.size == 0 then
+		  if last == @torrents.size then
 			@loading = false;
 			@num_pages = (@torrents.size / @menusize.to_f).ceil;
 			@page = @page > @num_pages ? @num_pages : @page;
@@ -230,6 +231,7 @@ module Nyaa
           last = @torrents.size;
 		  sleep(2);
 		end
+
         Thread.kill
       end
     end
