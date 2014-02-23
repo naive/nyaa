@@ -12,9 +12,7 @@ include Curses
 def batch_mode
     results = @search.more.get_results
     results.each do |r|
-      puts "o #{r.name}"
-      puts "#{r.link}"
-      puts
+      puts "#{r.link}\t#{r.name}"
     end
     exit
 end
