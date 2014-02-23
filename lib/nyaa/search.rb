@@ -10,7 +10,7 @@ module Nyaa
 
       self.category = cat ? CATS[cat.to_sym][:id] : '0_0'
       self.filter   = fil ? FILS[fil.to_sym][:id] : '0'
-	  self.sort = sort ? SORT[sort.to_sym] : '1'
+	  self.sort = sort ? SORT[sort.to_sym] : nil
 	  self.order = order ? ORDER[order.to_sym] : '2'
 
       self.offset   = 0
@@ -108,7 +108,7 @@ module Nyaa
 
     def fetch(page)
       url = "#{BASE_URL}&offset=#{page}"
-      url << "&cats=#{self.category}&filter=#{self.filter}&sort=#{self.sort}&order=#{self.order}"
+      url << "&cats=#{self.category}&filter=#{self.filter}" + ( self.sort != nil ?  "&sort=#{self.sort}&order=#{self.order}" : "");
       url << "&term=#{self.query}" unless self.query.empty?
 	  open(url).read
     end

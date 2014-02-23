@@ -19,7 +19,7 @@ module Nyaa
 		self.leechers = $2.to_i;
 		self.filesize = $4.strip;
 
-		self.status = $5 != nil ? $5.strip.downcase : '';
+		self.status = state( $5 != nil ? $5.strip.downcase : '' );
 		self.downloads = $3.to_i;
 	  }
 
