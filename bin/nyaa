@@ -33,8 +33,9 @@ if @opts[:batch]
   batch_mode
 end
 
-nyaa = Nyaa::UI.new(@opts, @search)
-cursor = 1
+nyaa = Nyaa::UI.new(@opts, @search);
+Curses::timeout = 1000;
+cursor = 1;
 
 curses_mode do
   #TODO: Gracefully handle window resizing
