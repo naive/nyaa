@@ -224,7 +224,7 @@ module Nyaa
 			@loading = false;
 			@num_pages = (@torrents.size / @menusize.to_f).ceil;
 			@page = @page > @num_pages ? @num_pages : @page;
-			@offset = (@page - 1) * @menusizes;
+			@offset = (@page - 1) * @menusize;
 			break;
 		  end
 
