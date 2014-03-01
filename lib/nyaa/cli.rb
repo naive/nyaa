@@ -19,11 +19,11 @@ module Nyaa
           @config[:filter] = filter
         end
 
-		opt.on('-s', '--sort=SORT', 'Sort type for listing') do |sort|
-			split = sort.split('_');
-			@config[:sort] = Nyaa::SORT.has_key?(split.first.to_sym) ? split.first : 'date';
-			@config[:order] = Nyaa::ORDER.has_key?(split.last.to_sym) ? split.last : 'desc';
-		end
+        opt.on('-s', '--sort=SORT', 'Sort type for listing') do |sort|
+          split = sort.split('_');
+          @config[:sort] = Nyaa::SORT.has_key?(split.first.to_sym) ? split.first : 'date'
+          @config[:order] = Nyaa::ORDER.has_key?(split.last.to_sym) ? split.last : 'desc'
+        end
 
         @config[:output] = Dir.pwd
         opt.on('-o', '--output-path=PATH', 'Output directory for downloads') do |output|
@@ -55,7 +55,7 @@ Categories:
 
 Filters:
   show_all, filter_remakes, trusted_only, aplus_only
-		  
+
 Sort:
   date, seed, leech, download, size, name
 

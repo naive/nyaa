@@ -21,7 +21,7 @@ module Nyaa
       @commands = {
         '?' => 'help',
         'g' => 'get',
-		's' => 'start',
+        's' => 'start',
         'i' => 'info',
         'n' => 'next',
         'p' => 'prev',
@@ -31,8 +31,8 @@ module Nyaa
       @search = search
       @torrents = @search.more.results
       @num_torrents = @torrents.size
-	  @loading = @torrents.size % 100 == 0 ? true : false;
-	  harvester # start bg harvester
+      @loading = @torrents.size % 100 == 0 ? true : false;
+      harvester # start bg harvester
       
       @menusize = lines - 4 # lines - header + footer + status
       @page = 1
@@ -119,10 +119,10 @@ module Nyaa
           line_text = " "*cols
           addstr(line_text)
           xpos += 1
-		end 
+        end 
       end
 
-	  status("Fetching more results, try again.", :failure) if @loading && @torrents[@offset + 1].nil?;
+      status("Fetching more results, try again.", :failure) if @loading && @torrents[@offset + 1].nil?;
     end
 
     def help
@@ -161,21 +161,19 @@ module Nyaa
         status("Downloaded successful: #{torrent.tid}", :success)
       else
         status("Download failed (3 attempts): #{torrent.tid}", :failure)
-	return nil;
+        return nil;
       end
 
       return path;
     end
 
-	def start(choice)
-		path = self.get(choice);
-		self.open(path) if path != nil;
-	end
+    def start(choice)
+      path = self.get(choice);
+      self.open(path) if path != nil;
+    end
 
     def open(choice)
-      
       link = choice.class == Fixnum ? @torrents[@offset + choice - 1].info.to_s : choice;
-
       if RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/ then
           system("start #{link}")
       elsif RbConfig::CONFIG['host_os'] =~ /darwin/ then
@@ -183,7 +181,6 @@ module Nyaa
       elsif RbConfig::CONFIG['host_os'] =~ /linux/ then
           system("xdg-open '#{link}'", [:out, :err]=>'/dev/null')
       end
-
       status("Opened '#{link}'", :success)
     end
 
@@ -192,19 +189,15 @@ module Nyaa
       unless @page + 1 > @num_pages && @loading == false
         @page += 1
       end
-
       @offset = (page - 1) * @menusize;
-
     end
 
     def prev_page
       unless @page - 1 < 1
         @page += -1
       end
-
       @offset = (@page - 1) * @menusize;
-
-	end
+    end
 
     def resize_handler(cursor)
       @menusize = lines - 4
@@ -214,24 +207,22 @@ module Nyaa
 
     def harvester
       Thread.new do
-	    last = @torrents.size;
-        
-		loop do
+        last = @torrents.size;
+        loop do
           @torrents = @search.more.results
           @num_torrents = @torrents.size
 
-		  if last == @torrents.size then
-			@loading = false;
-			@num_pages = (@torrents.size / @menusize.to_f).ceil;
-			@page = @page > @num_pages ? @num_pages : @page;
-			@offset = (@page - 1) * @menusize;
-			break;
-		  end
+          if last == @torrents.size then
+            @loading = false;
+            @num_pages = (@torrents.size / @menusize.to_f).ceil;
+            @page = @page > @num_pages ? @num_pages : @page;
+            @offset = (@page - 1) * @menusize;
+            break;
+          end
 
           last = @torrents.size;
-		  sleep(2);
-		end
-
+          sleep(2);
+        end
         Thread.kill
       end
     end

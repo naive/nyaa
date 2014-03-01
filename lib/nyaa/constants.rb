@@ -121,17 +121,17 @@ module Nyaa
       },
     }
 
-	SORT = {
-		:date => '1',
-		:seed => '2',
-		:leech => '3',
-		:download => '4',
-		:size => '5',
-		:name => '6'
-	}
+    SORT = {
+      :date     => '1',
+      :seed     => '2',
+      :leech    => '3',
+      :download => '4',
+      :size     => '5',
+      :name     => '6'
+    }
 
-	ORDER = {
-		:desc => '1',
-		:asc => '2'
-	}
+    ORDER = {
+      :desc => '1',
+      :asc => '2'
+    }
 end

@@ -5,7 +5,6 @@ $:.unshift File.join(File.dirname(__FILE__),'..','lib')
 require 'nyaa'
 include Curses
 
-
 @opts = Nyaa::CLI.parse(ARGV)
 @search = Nyaa::Search.new(@opts[:query], @opts[:category], @opts[:filter], @opts[:sort], @opts[:order])
 
@@ -39,27 +38,26 @@ curses_mode do
   #TODO: Gracefully handle window resizing
   #Signal.trap('SIGWINCH', nyaa.status("Window size changed!", :failure))
   begin
-	  loop do
-	    nyaa.header
-	    nyaa.status
-	    nyaa.footer
-	    nyaa.menu(cursor)
-	    refresh
+    loop do
+      nyaa.header
+      nyaa.status
+      nyaa.footer
+      nyaa.menu(cursor)
+      refresh
 
-	    case getch
-	    when *[Key::UP,'k']    then cursor = nyaa.move(cursor, -1)
-	    when *[Key::DOWN,'j']  then cursor = nyaa.move(cursor, 1)
-	    when *[Key::NPAGE,'n'] then nyaa.next_page
-	    when *[Key::PPAGE,'p'] then nyaa.prev_page
-	    when *[Key::ENTER,'g'] then nyaa.get(cursor)
-		when 's' then nyaa.start(cursor);
-	    when 'i' then nyaa.open(cursor)
-	    when '?' then nyaa.help
-	    when 'q' then @search.purge && break
-	    #when Key::RESIZE then nyaa.status("Window size changed!", :failure)
-	    end
-	  end
+      case getch
+      when *[Key::UP,'k']    then cursor = nyaa.move(cursor, -1)
+      when *[Key::DOWN,'j']  then cursor = nyaa.move(cursor, 1)
+      when *[Key::NPAGE,'n'] then nyaa.next_page
+      when *[Key::PPAGE,'p'] then nyaa.prev_page
+      when *[Key::ENTER,'g'] then nyaa.get(cursor)
+      when 's' then nyaa.start(cursor);
+      when 'i' then nyaa.open(cursor)
+      when '?' then nyaa.help
+      when 'q' then @search.purge && break
+      #when Key::RESIZE then nyaa.status("Window size changed!", :failure)
+      end
+    end
   rescue Interrupt then end
 end
-
 exit

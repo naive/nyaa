@@ -9,22 +9,22 @@ module Nyaa
     attr_accessor :health, :bytes
 
     def initialize (row = nil)
-	  self.tid      = row.at_css("link").text[/tid=\d+/].gsub(/\D/,'')
+      self.tid      = row.at_css("link").text[/tid=\d+/].gsub(/\D/,'')
       self.name     = row.at_css("title").text;
       self.info     = row.at_css("guid").text;
       self.link     = row.at_css("link").text;
-	  
-      row.at_css("description").text.match(/(\d+)[^\d]+(\d+)[^\d]+(\d+)[^\d]+([^-]+)-?([^-]+)?/){
-	  	self.seeders = $1.to_i;
-		self.leechers = $2.to_i;
-		self.filesize = $4.strip;
 
-		self.status = state( $5 != nil ? $5.strip.downcase : '' );
-		self.downloads = $3.to_i;
-	  }
+      row.at_css("description").text.match(/(\d+)[^\d]+(\d+)[^\d]+(\d+)[^\d]+([^-]+)-?([^-]+)?/){
+        self.seeders = $1.to_i;
+        self.leechers = $2.to_i;
+        self.downloads = $3.to_i;
+        self.filesize = $4.strip;
+        filter = $5.nil? ? '' : $5.strip.downcase
+        self.status = state(filter)
+      }
 
       self.category  = row.at_css("category").text;
-	  self.date = Time.parse(row.at_css("pubDate")).localtime;
+      self.date = Time.parse(row.at_css("pubDate")).localtime;
     end
 
 
@@ -51,7 +51,7 @@ module Nyaa
       case value
       when 'trusted' then status = 'Trusted'
       when 'remake'  then status = 'Remake'
-      when 'aplus'   then status = 'A+'
+      when 'a+'      then status = 'A+'
       when ''        then status = 'Normal'
       else status = 'Normal'
       end

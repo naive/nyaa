@@ -10,8 +10,8 @@ module Nyaa
 
       self.category = cat ? CATS[cat.to_sym][:id] : '0_0'
       self.filter   = fil ? FILS[fil.to_sym][:id] : '0'
-	  self.sort = sort ? SORT[sort.to_sym] : nil
-	  self.order = order ? ORDER[order.to_sym] : '2'
+      self.sort = sort ? SORT[sort.to_sym] : nil
+      self.order = order ? ORDER[order.to_sym] : '2'
 
       self.offset   = 0
       self.results  = []
@@ -97,10 +97,10 @@ module Nyaa
     def extract(page)
       raw = fetch(page)
       doc = Nokogiri::XML(raw)
-	  rows = doc.xpath("//item");
+      rows = doc.xpath("//item");
       rows.each { |row| self.results << Torrent.new(row) }
       self.count = self.results.count;
-	  #dump(page, self.results)
+      #dump(page, self.results)
       #dump_json(page, self.results)
     end
 
@@ -108,7 +108,7 @@ module Nyaa
       url = "#{BASE_URL}&offset=#{page}"
       url << "&cats=#{self.category}&filter=#{self.filter}" + ( self.sort != nil ?  "&sort=#{self.sort}&order=#{self.order}" : "");
       url << "&term=#{self.query}" unless self.query.empty?
-	  open(url).read
+      open(url).read
     end
   end
 end
