@@ -6,9 +6,10 @@ Nyaa is a CLI to Nyaa.eu. You can browse, search, and download. Nifty.
 
 * Ncurses interface
 * Search by category, filter, page, and query
+* Sort by various attributes (date, seeds, downloads, etc.)
 * Browsing with pagination
 * Download it or open a browser window from the interface
-* Nyaa status aware: (aplus, trusted, remake, etc.)
+* Nyaa status aware: (a+, trusted, remake, etc.)
 * Batch mode for scripts (first page only atm)
 * Supports unicode characters (requires `libncursesw5-dev` and `ruby1.9` or
   greater)
@@ -54,3 +55,8 @@ MIT License. See LICENSE file for details.
 ## Authors
 
 David Palma
+
+## Contributors
+
+* [Yengas](https://github.com/Yengas)
+
