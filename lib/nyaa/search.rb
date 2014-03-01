@@ -1,14 +1,18 @@
 # -*- encoding : utf-8 -*-
 module Nyaa
   class Search
-    attr_accessor :query, :category, :filter
+    attr_accessor :query, :category, :filter, :sort, :order
     attr_accessor :offset, :count, :results
     attr_accessor :runid, :cachedir
 
-    def initialize(query, cat = nil, fil = nil)
+    def initialize(query, cat = nil, fil = nil, sort = nil, order = nil)
       self.query    = URI.escape(query)
+
       self.category = cat ? CATS[cat.to_sym][:id] : '0_0'
       self.filter   = fil ? FILS[fil.to_sym][:id] : '0'
+	  self.sort = sort ? SORT[sort.to_sym] : nil
+	  self.order = order ? ORDER[order.to_sym] : '2'
+
       self.offset   = 0
       self.results  = []
       self.count    = 1.0/0.0
@@ -32,10 +36,8 @@ module Nyaa
 
     def more
       self.offset += 1
-      if self.results.length < self.count
-        extract(self.offset)
-      end
-        self
+      extract(self.offset)
+      return self
     end
 
     # TODO: Deprecated function
@@ -94,19 +96,19 @@ module Nyaa
 
     def extract(page)
       raw = fetch(page)
-      doc = Nokogiri::HTML(raw)
-      self.count = doc.css('span.notice').text.match(/\d+/).to_s.to_i
-      rows = doc.css('div#main div.content table.tlist tr.tlistrow')
+      doc = Nokogiri::XML(raw)
+	  rows = doc.xpath("//item");
       rows.each { |row| self.results << Torrent.new(row) }
-      #dump(page, self.results)
+      self.count = self.results.count;
+	  #dump(page, self.results)
       #dump_json(page, self.results)
     end
 
     def fetch(page)
       url = "#{BASE_URL}&offset=#{page}"
-      url << "&cats=#{self.category}&filter=#{self.filter}"
+      url << "&cats=#{self.category}&filter=#{self.filter}" + ( self.sort != nil ?  "&sort=#{self.sort}&order=#{self.order}" : "");
       url << "&term=#{self.query}" unless self.query.empty?
-      open(url).read
+	  open(url).read
     end
   end
 end

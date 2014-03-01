@@ -16,10 +16,13 @@ module Nyaa
 
     def save
       unless @fail
+		path = self.destination + '/' + filename;
         File.open("#{self.destination}/#{filename}", 'w') do |f|
           f.write(self.response.read)
         end
+		return path;
       end
+	  return nil;
     end
 
     def failed?

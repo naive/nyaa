@@ -12,7 +12,7 @@ NYAA HELP
 -----------------------------------------
     i               : Opens the torrent page in a web browser.
     g or ENTER      : Download the torrent to the output directory.
-                      See `nyaa --help` to change it.
+    s               : (g)ets the torrent and tries to start it with the installed torrent client.
     q               : Quit
     ?               : Help screen
 

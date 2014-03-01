@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 module Nyaa
 
-    BASE_URL = 'http://www.nyaa.se/?page=search'
+    BASE_URL = 'http://www.nyaa.se/?page=rss'
 
     CATS = {
       :all_categories    => {
@@ -120,4 +120,18 @@ module Nyaa
         :title => 'A+ only'
       },
     }
+
+	SORT = {
+		:date => '1',
+		:seed => '2',
+		:leech => '3',
+		:download => '4',
+		:size => '5',
+		:name => '6'
+	}
+
+	ORDER = {
+		:desc => '1',
+		:asc => '2'
+	}
 end

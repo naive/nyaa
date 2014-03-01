@@ -21,6 +21,7 @@ module Nyaa
       @commands = {
         '?' => 'help',
         'g' => 'get',
+		's' => 'start',
         'i' => 'info',
         'n' => 'next',
         'p' => 'prev',
@@ -30,7 +31,8 @@ module Nyaa
       @search = search
       @torrents = @search.more.results
       @num_torrents = @torrents.size
-      harvester # start bg harvester
+	  @loading = @torrents.size % 100 == 0 ? true : false;
+	  harvester # start bg harvester
       
       @menusize = lines - 4 # lines - header + footer + status
       @page = 1
@@ -63,8 +65,8 @@ module Nyaa
 
       search_summary = sprintf " %-14s %-14s %-14s",
         "view: [#{@offset+1}-#{@offset+@menusize}]/#{@search.count}",
-        "recv: #{@num_torrents}/#{@search.count}",
-        "page: #{@page}/#{@num_pages}"
+        "recv: #{@num_torrents}/#{@loading ? "unk" : @search.count}",
+        "page: #{@page}/#{@loading ? "unk" : @num_pages}"
       attrset(color_pair(2))
       setpos(lines - 2, 0)
       addstr(sprintf "%-#{cols}s", search_summary)
@@ -93,10 +95,8 @@ module Nyaa
       setpos(xpos, 0)
 
       (0..@menusize-1).each do |i|
+
         if i < @search.count - @offset
-          if @torrents[@offset + i].nil?
-            status("Fetching more results, try again.", :failure)
-          else
             line_text = sprintf("% -#{@name_column_width}s %9s %9s %9s",
               truncate("#{@torrents[@offset + i].name}", @name_column_width),
               @torrents[@offset + i].filesize,
@@ -114,14 +114,15 @@ module Nyaa
               addstr(line_text)
             end
             xpos += 1
-          end
         else
           # blank lines if there's < @menusize of results
           line_text = " "*cols
           addstr(line_text)
           xpos += 1
-        end 
+		end 
       end
+
+	  status("Fetching more results, try again.", :failure) if @loading && @torrents[@offset + 1].nil?;
     end
 
     def help
@@ -154,17 +155,27 @@ module Nyaa
     def get(choice)
       torrent = @torrents[@offset + choice - 1]
       download = Downloader.new(torrent.link, @config[:output])
-      download.save
+      path = download.save
+
       unless download.failed?
         status("Downloaded successful: #{torrent.tid}", :success)
       else
         status("Download failed (3 attempts): #{torrent.tid}", :failure)
+	return nil;
       end
+
+      return path;
     end
 
+	def start(choice)
+		path = self.get(choice);
+		self.open(path) if path != nil;
+	end
+
     def open(choice)
-      torrent = @torrents[@offset + choice - 1]
-      link = "#{torrent.info}"
+      
+      link = choice.class == Fixnum ? @torrents[@offset + choice - 1].info.to_s : choice;
+
       if RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/ then
           system("start #{link}")
       elsif RbConfig::CONFIG['host_os'] =~ /darwin/ then
@@ -172,18 +183,18 @@ module Nyaa
       elsif RbConfig::CONFIG['host_os'] =~ /linux/ then
           system("xdg-open '#{link}'", [:out, :err]=>'/dev/null')
       end
+
       status("Opened '#{link}'", :success)
     end
 
     def next_page
       status("Ready.")
-      unless @page + 1 > @num_pages
+      unless @page + 1 > @num_pages && @loading == false
         @page += 1
       end
 
-      unless @offset + @menusize > @num_torrents
-        @offset += @menusize
-      end
+      @offset = (page - 1) * @menusize;
+
     end
 
     def prev_page
@@ -191,10 +202,9 @@ module Nyaa
         @page += -1
       end
 
-      unless @offset == 0
-        @offset -= @menusize
-      end
-    end
+      @offset = (@page - 1) * @menusize;
+
+	end
 
     def resize_handler(cursor)
       @menusize = lines - 4
@@ -204,11 +214,24 @@ module Nyaa
 
     def harvester
       Thread.new do
-        until @num_torrents == @search.count
+	    last = @torrents.size;
+        
+		loop do
           @torrents = @search.more.results
           @num_torrents = @torrents.size
-          sleep 2
-        end
+
+		  if last == @torrents.size then
+			@loading = false;
+			@num_pages = (@torrents.size / @menusize.to_f).ceil;
+			@page = @page > @num_pages ? @num_pages : @page;
+			@offset = (@page - 1) * @menusize;
+			break;
+		  end
+
+          last = @torrents.size;
+		  sleep(2);
+		end
+
         Thread.kill
       end
     end
