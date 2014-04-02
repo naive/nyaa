@@ -127,6 +127,7 @@ module Nyaa
 
     def help
       system("less #{DOC}")
+      stdscr.keypad(true) # less messes up this option, set back to true again
       clear
     end
 
