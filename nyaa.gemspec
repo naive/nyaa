@@ -16,5 +16,5 @@ Gem::Specification.new do |s|
   s.require_path = ['lib']
 
   s.add_runtime_dependency 'curses', '~> 1.0.1'
-  s.add_runtime_dependency 'nokogiri', '~> 1.5.5'
+  s.add_runtime_dependency 'nokogiri', '~> 1.6.3'
 end
